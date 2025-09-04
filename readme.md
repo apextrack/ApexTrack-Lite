@@ -52,7 +52,7 @@ Install ApexTrack-Lite using one of the following methods:
 ##  Project Roadmap
 
 - [X] **`Task 1`**: <strike>Implement feature one.</strike>
-- [X ] **`Task 2`**: Implement feature two.
+- [X] **`Task 2`**: <strike>Implement feature two.</strike>
 - [ ] **`Task 3`**: Implement feature three.
 
 ---
@@ -102,8 +102,8 @@ Install ApexTrack-Lite using one of the following methods:
 
 ##  License
 
-This project is protected under the [MIT](https://choosealicense.com/licenses/mit) License. For more details, refer to the [LICENSE](https://github.com/apextrack/ApexTrack-Lite/blob/master/LICENSE
-) file.
+This project is protected under the [MIT](https://choosealicense.com/licenses/mit) License.
+For more details, refer to the [LICENSE](https://github.com/apextrack/ApexTrack-Lite/blob/master/LICENSE) file.
 ---
 
 ##  Acknowledgments
