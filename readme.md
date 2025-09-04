@@ -1,9 +1,7 @@
 <div align="left" style="position: relative;">
 <img src="https://raw.githubusercontent.com/PKief/vscode-material-icon-theme/ec559a9f6bfd399b82bb44393651661b08aaf7ba/icons/folder-markdown-open.svg" align="right" width="30%" style="margin: -20px 0 0 20px;">
 <h1>APEXTRACK-LITE</h1>
-<p align="left">
-	<em><code>❯ REPLACE-ME</code></em>
-</p>
+
 <p align="left">
 	<img src="https://img.shields.io/github/license/apextrack/ApexTrack-Lite?style=flat&logo=opensourceinitiative&logoColor=white&color=0080ff" alt="license">
 	<img src="https://img.shields.io/github/last-commit/apextrack/ApexTrack-Lite?style=flat&logo=git&logoColor=white&color=0080ff" alt="last-commit">
@@ -35,42 +33,6 @@
 
 </details>
 <hr>
-
-##  Overview
-
-<code>❯ REPLACE-ME</code>
-
----
-
-##  Features
-
-<code>❯ REPLACE-ME</code>
-
----
-
-##  Project Structure
-
-```sh
-└── ApexTrack-Lite/
-    ├── config.php
-    ├── dashboard.php
-    ├── generator.php
-    ├── index.php
-    ├── layout
-    │   ├── footer.php
-    │   └── header.php
-    ├── login.php
-    ├── logout.php
-    ├── offers.php
-    ├── profil.php
-    ├── readme.md
-    ├── reports.php
-    ├── settings.json
-    ├── settings.php
-    ├── uploads
-    │   └── d679be7aaa77450c61942d5fa7c9f68f.ico
-    └── user.php
-```
 
 
 ###  Project Index

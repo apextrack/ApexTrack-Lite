@@ -117,7 +117,7 @@ if (file_exists($settingsFile)) {
                     <span>Dashboard</span>
                 </a>
                 <a href="generator.php" class="flex items-center text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200">
-                    <i data-lucide="code" class="w-5 h-5 mr-1"></i>
+                    <i data-lucide="link" class="w-5 h-5 mr-1"></i>
                     <span>Generator</span>
                 </a>
                 
@@ -133,6 +133,10 @@ if (file_exists($settingsFile)) {
                 <a href="user.php" class="flex items-center text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200">
                     <i data-lucide="user" class="w-5 h-5 mr-1"></i>
                     <span>Users</span>
+                </a>
+                 <a href="domain.php" class="flex items-center text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200">
+                    <i data-lucide="globe" class="w-5 h-5 mr-1"></i>
+                    <span>Domain</span>
                 </a>
                 <a href="settings.php" class="flex items-center text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200">
                     <i data-lucide="settings" class="w-5 h-5 mr-1"></i>
@@ -163,7 +167,7 @@ if (file_exists($settingsFile)) {
                 <span>Dashboard</span>
             </a>
             <a href="generator.php" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors duration-200">
-                <i data-lucide="code" class="w-5 h-5 mr-2"></i>
+                <i data-lucide="link" class="w-5 h-5 mr-2"></i>
                 <span>Generator</span>
             </a>
             <?php if ($userRole !== 'user'): ?>
@@ -178,6 +182,10 @@ if (file_exists($settingsFile)) {
             <a href="user.php" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors duration-200">
                 <i data-lucide="user" class="w-5 h-5 mr-2"></i>
                 <span>Users</span>
+            </a>
+             <a href="domain.php" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors duration-200">
+                <i data-lucide="globe" class="w-5 h-5 mr-2"></i>
+                <span>Domain</span>
             </a>
             <a href="settings.php" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors duration-200">
                 <i data-lucide="settings" class="w-5 h-5 mr-2"></i>
