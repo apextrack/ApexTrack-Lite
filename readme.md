@@ -15,102 +15,8 @@
 </div>
 <br clear="right">
 
-<details><summary>Table of Contents</summary>
-
-- [ Overview](#-overview)
-- [ Features](#-features)
-- [ Project Structure](#-project-structure)
-  - [ Project Index](#-project-index)
-- [ Getting Started](#-getting-started)
-  - [ Prerequisites](#-prerequisites)
-  - [ Installation](#-installation)
-  - [ Usage](#-usage)
-  - [ Testing](#-testing)
-- [ Project Roadmap](#-project-roadmap)
-- [ Contributing](#-contributing)
-- [ License](#-license)
-- [ Acknowledgments](#-acknowledgments)
-
-</details>
-<hr>
 
 
-###  Project Index
-<details open>
-	<summary><b><code>APEXTRACK-LITE/</code></b></summary>
-	<details> <!-- __root__ Submodule -->
-		<summary><b>__root__</b></summary>
-		<blockquote>
-			<table>
-			<tr>
-				<td><b><a href='https://github.com/apextrack/ApexTrack-Lite/blob/master/user.php'>user.php</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
-			</tr>
-			<tr>
-				<td><b><a href='https://github.com/apextrack/ApexTrack-Lite/blob/master/generator.php'>generator.php</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
-			</tr>
-			<tr>
-				<td><b><a href='https://github.com/apextrack/ApexTrack-Lite/blob/master/config.php'>config.php</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
-			</tr>
-			<tr>
-				<td><b><a href='https://github.com/apextrack/ApexTrack-Lite/blob/master/dashboard.php'>dashboard.php</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
-			</tr>
-			<tr>
-				<td><b><a href='https://github.com/apextrack/ApexTrack-Lite/blob/master/settings.json'>settings.json</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
-			</tr>
-			<tr>
-				<td><b><a href='https://github.com/apextrack/ApexTrack-Lite/blob/master/index.php'>index.php</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
-			</tr>
-			<tr>
-				<td><b><a href='https://github.com/apextrack/ApexTrack-Lite/blob/master/offers.php'>offers.php</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
-			</tr>
-			<tr>
-				<td><b><a href='https://github.com/apextrack/ApexTrack-Lite/blob/master/profil.php'>profil.php</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
-			</tr>
-			<tr>
-				<td><b><a href='https://github.com/apextrack/ApexTrack-Lite/blob/master/login.php'>login.php</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
-			</tr>
-			<tr>
-				<td><b><a href='https://github.com/apextrack/ApexTrack-Lite/blob/master/logout.php'>logout.php</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
-			</tr>
-			<tr>
-				<td><b><a href='https://github.com/apextrack/ApexTrack-Lite/blob/master/settings.php'>settings.php</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
-			</tr>
-			<tr>
-				<td><b><a href='https://github.com/apextrack/ApexTrack-Lite/blob/master/reports.php'>reports.php</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
-			</tr>
-			</table>
-		</blockquote>
-	</details>
-	<details> <!-- layout Submodule -->
-		<summary><b>layout</b></summary>
-		<blockquote>
-			<table>
-			<tr>
-				<td><b><a href='https://github.com/apextrack/ApexTrack-Lite/blob/master/layout/header.php'>header.php</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
-			</tr>
-			<tr>
-				<td><b><a href='https://github.com/apextrack/ApexTrack-Lite/blob/master/layout/footer.php'>footer.php</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
-			</tr>
-			</table>
-		</blockquote>
-	</details>
-</details>
-
----
 ##  Getting Started
 
 ###  Prerequisites
@@ -136,25 +42,17 @@ Install ApexTrack-Lite using one of the following methods:
 ❯ cd ApexTrack-Lite
 ```
 
-3. Install the project dependencies:
+3. Move To Index Folder:
 
-echo 'INSERT-INSTALL-COMMAND-HERE'
-
-
-
-###  Usage
-Run ApexTrack-Lite using the following command:
-echo 'INSERT-RUN-COMMAND-HERE'
-
-###  Testing
-Run the test suite using the following command:
-echo 'INSERT-TEST-COMMAND-HERE'
+```sh
+❯ cd ApexTrack-Lite
+```
 
 ---
 ##  Project Roadmap
 
 - [X] **`Task 1`**: <strike>Implement feature one.</strike>
-- [ ] **`Task 2`**: Implement feature two.
+- [X ] **`Task 2`**: Implement feature two.
 - [ ] **`Task 3`**: Implement feature three.
 
 ---
@@ -204,8 +102,8 @@ echo 'INSERT-TEST-COMMAND-HERE'
 
 ##  License
 
-This project is protected under the [SELECT-A-LICENSE](https://choosealicense.com/licenses) License. For more details, refer to the [LICENSE](https://choosealicense.com/licenses/) file.
-
+This project is protected under the [MIT](https://choosealicense.com/licenses/mit) License. For more details, refer to the [LICENSE](https://github.com/apextrack/ApexTrack-Lite/blob/master/LICENSE
+) file.
 ---
 
 ##  Acknowledgments
