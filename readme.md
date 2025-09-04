@@ -45,7 +45,7 @@ Install ApexTrack-Lite using one of the following methods:
 3. Move To Index Folder:
 
 ```sh
-❯ cd ApexTrack-Lite
+❯ mv ApexTrack-Lite/* .
 ```
 
 ---
