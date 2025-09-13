@@ -8,7 +8,7 @@ $baseApiUrl = BASE_API_URL ?? '';
 
 <main class="flex-grow pt-20 md:pt-6 p-0 md:p-6 lg:p-10">
     <h2 class="text-3xl font-bold text-gray-800 mb-6">Edit Profil Anda</h2>
-    <div class="w-full mx-auto bg-white p-8 rounded-lg shadow-xl">
+    <div class="w-full mx-auto bg-white p-8 shadow-xl">
 
         <div id="profile-message" class="hidden mb-6"></div>
 
@@ -19,13 +19,13 @@ $baseApiUrl = BASE_API_URL ?? '';
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Nama</label>
                 <input type="text" name="name" id="name" required autofocus
-                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
 
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                 <input type="email" name="email" id="email" required
-                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
 
             <div class="flex justify-end">
@@ -45,19 +45,19 @@ $baseApiUrl = BASE_API_URL ?? '';
             <div>
                 <label for="current_password" class="block text-sm font-medium text-gray-700">Kata Sandi Saat Ini</label>
                 <input type="password" name="current_password" id="current_password" required
-                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
 
             <div>
                 <label for="password" class="block text-sm font-medium text-gray-700">Kata Sandi Baru</label>
                 <input type="password" name="password" id="password" required
-                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
 
             <div>
                 <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Konfirmasi Kata Sandi Baru</label>
                 <input type="password" name="password_confirmation" id="password_confirmation" required
-                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
 
             <div class="flex justify-end">

@@ -12,6 +12,8 @@ if (file_exists($settingsFile)) {
     if ($settings) {
         $siteName = htmlspecialchars($settings['site_name'] ?? 'Default Site Name');
         $faviconUrl = htmlspecialchars($settings['favicon_url'] ?? '');
+        $logoUrl = htmlspecialchars($settings['logo_url'] ?? ''); 
+
     }
 }
 
@@ -109,7 +111,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="bg-white p-8 shadow-xl w-full max-w-md">
         <h2 class="text-3xl font-bold text-center text-gray-900 mb-6">
-            <?php echo $siteName; ?>
+            <?php if (!empty($logoUrl)): ?>
+                <img src="<?php echo $logoUrl; ?>" alt="<?php echo $siteName; ?>" class="mx-auto h-26"> <?php else: ?>
+                <?php echo $siteName; ?>
+            <?php endif; ?>
         </h2>
         <?php 
         if (isset($errorMessage)): ?>
