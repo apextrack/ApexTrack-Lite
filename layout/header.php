@@ -52,7 +52,7 @@ if (file_exists($settingsFile)) {
             transform: scale(1);
             opacity: 1;
         }
-        .card {
+                .card {
             background-color: white;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 1.5rem;
@@ -104,11 +104,11 @@ if (file_exists($settingsFile)) {
 <body class="bg-gray-100 font-sans leading-normal tracking-normal flex flex-col min-h-screen">
 
     <nav class="bg-white shadow-md p-4 md:px-10 flex justify-between items-center fixed w-full z-40 relative">
-        <a href="dashboard.php" class="text-decoration-none">
-            <h1 class="text-3xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
-                <?php echo $siteName; ?>
-            </h1>
-        </a>
+<a href="dashboard.php" class="text-decoration-none">
+    <h1 class="text-3xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
+        <?php echo $siteName; ?>
+    </h1>
+</a>
         
         <div class="hidden md:flex items-center space-x-12">
             <div id="navbar-menu-desktop" class="flex items-center space-x-6">
@@ -134,7 +134,7 @@ if (file_exists($settingsFile)) {
                     <i data-lucide="user" class="w-5 h-5 mr-1"></i>
                     <span>Users</span>
                 </a>
-                <a href="domain.php" class="flex items-center text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200">
+                 <a href="domain.php" class="flex items-center text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200">
                     <i data-lucide="globe" class="w-5 h-5 mr-1"></i>
                     <span>Domain</span>
                 </a>
@@ -145,22 +145,23 @@ if (file_exists($settingsFile)) {
                 <?php endif; ?>
             </div>
             
-            <div class="relative">
-                <button id="profile-dropdown-button" class="flex items-center space-x-2 text-gray-800 focus:outline-none">
-                    <img src="uploads/user.webp" alt="User Profile" class="w-10 h-10 rounded-full border-2 border-transparent hover:border-blue-500 transition-colors">
-                </button>
-                <div id="profile-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg hidden">
-                    <a href="profil.php" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
-                    <a href="logout.php" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</a>
-                </div>
-            </div>
+<div class="relative">
+    <button id="profile-dropdown-button" class="flex items-center space-x-2 text-gray-800 focus:outline-none">
+        <img src="uploads/user.webp" alt="User Profile" class="w-10 h-10 rounded-full border-2 border-transparent hover:border-blue-500 transition-colors">
+    </button>
+    <div id="profile-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg hidden">
+        <a href="profil.php" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+        <a href="logout.php" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</a>
+    </div>
+</div>
+
         </div>
 
         <button id="menu-button" class="md:hidden text-gray-800">
             <i data-lucide="menu" class="w-6 h-6"></i>
         </button>
         
-        <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-white shadow-lg py-2 md:hidden z-30">
+        <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-white shadow-lg py-2 md:hidden">
             <a href="dashboard.php" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors duration-200">
                 <i data-lucide="layout-dashboard" class="w-5 h-5 mr-2"></i>
                 <span>Dashboard</span>
@@ -182,7 +183,7 @@ if (file_exists($settingsFile)) {
                 <i data-lucide="user" class="w-5 h-5 mr-2"></i>
                 <span>Users</span>
             </a>
-            <a href="domain.php" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors duration-200">
+             <a href="domain.php" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors duration-200">
                 <i data-lucide="globe" class="w-5 h-5 mr-2"></i>
                 <span>Domain</span>
             </a>
@@ -191,7 +192,6 @@ if (file_exists($settingsFile)) {
                 <span>Settings</span>
             </a>
             <?php endif; ?>
-            
             <hr class="my-2 border-gray-200">
             <a href="profil.php" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors duration-200">
                 <i data-lucide="user" class="w-5 h-5 mr-2"></i>
@@ -203,6 +203,8 @@ if (file_exists($settingsFile)) {
             </a>
         </div>
     </nav>
+
+
 
     <script>
         lucide.createIcons();
@@ -229,9 +231,5 @@ if (file_exists($settingsFile)) {
             }
         });
     </script>
+            <main class="flex-grow pt-0 md:pt-0 p-0 md:p-6 lg:p-0">
 
-    <main class="flex-grow pt-0 md:pt-0 p-0 md:p-6 lg:p-0">
-        </main>
-
-</body>
-</html>
