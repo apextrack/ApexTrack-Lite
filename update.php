@@ -1,5 +1,4 @@
 <?php
-// update.php
 $zipUrl = 'https://github.com/apextrack/ApexTrack-Lite/archive/refs/heads/master.zip';
 $zipFile = 'update.zip';
 $tempDir = 'update_temp/';
@@ -10,13 +9,11 @@ if (!class_exists('ZipArchive')) {
 
 echo "Memulai proses pembaruan...\n";
 
-// Buat direktori sementara
 if (!is_dir($tempDir)) {
     mkdir($tempDir, 0755, true);
     echo "Direktori sementara dibuat.\n";
 }
 
-// Unduh file ZIP
 echo "Mengunduh pembaruan dari GitHub...\n";
 $zipContent = @file_get_contents($zipUrl);
 if ($zipContent === false) {
@@ -28,7 +25,6 @@ if (file_put_contents($zipFile, $zipContent) === false) {
 }
 echo "Berhasil mengunduh file ZIP.\n";
 
-// Mengekstrak file ZIP ke direktori sementara
 echo "Mengekstrak file...\n";
 $zip = new ZipArchive;
 if ($zip->open($zipFile) === true) {
@@ -39,12 +35,10 @@ if ($zip->open($zipFile) === true) {
     }
     $zip->close();
     
-    // Hapus file ZIP setelah diekstrak
     unlink($zipFile);
     
     echo "Pembaruan berhasil diekstrak!\n";
 
-    // Panggil skrip pemindahan untuk menyelesaikan pembaruan
     echo "Memulai proses pemindahan file...\n";
     $command = 'php -f ' . escapeshellarg('move.php');
     $output = shell_exec($command);

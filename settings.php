@@ -7,38 +7,32 @@ if (!isset($_SESSION['auth_token'])) {
     exit();
 }
 
-// === PENTING: Pindahkan definisi variabel ke atas untuk mencegah error ===
 $settingsFile = 'settings.json';
 $uploadsDir = 'uploads/';
 $allowedFileTypes = ['image/x-icon', 'image/vnd.microsoft.icon'];
 $message = '';
 $messageType = '';
-// =========================================================================
 
-// Pengaturan pembaruan versi
 $repoOwner = 'apextrack';
 $repoName = 'ApexTrack-Lite';
 $versionFileLocal = 'version.txt';
 $versionFileGithub = "https://raw.githubusercontent.com/{$repoOwner}/{$repoName}/master/version.txt";
 
-$currentVersion = '1.2.6'; // Versi fallback jika gagal terhubung
+$currentVersion = '1.2.6'; 
 $context = stream_context_create([
     'http' => ['header' => 'User-Agent: PHP-Script']
 ]);
 
-// Ambil versi saat ini dari file lokal
 if (file_exists($versionFileLocal)) {
     $currentVersion = trim(file_get_contents($versionFileLocal));
 }
 
-// Cek apakah direktori uploads ada, jika tidak, buat
 if (!is_dir($uploadsDir)) {
     if (!mkdir($uploadsDir, 0755, true)) {
         die('Gagal membuat direktori uploads.');
     }
 }
 
-// Muat pengaturan yang sudah ada
 $siteName = '';
 $faviconUrl = '';
 if (file_exists($settingsFile)) {
@@ -50,7 +44,6 @@ if (file_exists($settingsFile)) {
     }
 }
 
-// Tangani pengiriman formulir
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $newSiteName = trim($_POST['site_name'] ?? '');
 
@@ -112,12 +105,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Logika cek pembaruan menggunakan GitHub
 $latestVersion = null;
 $updateAvailable = false;
 $updateMessage = '';
 
-// Ambil versi terbaru dari file version.txt di GitHub
 $latestVersionData = @file_get_contents($versionFileGithub, false, $context);
 if ($latestVersionData !== false) {
     $latestVersion = trim($latestVersionData);
@@ -192,15 +183,13 @@ document.addEventListener('DOMContentLoaded', () => {
             updateButton.disabled = true;
             updateButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Memulai...';
             updateStatusContainer.classList.remove('hidden');
-            statusMessages.innerHTML = ''; // Clear previous messages
+            statusMessages.innerHTML = ''; 
 
-            // Use fetch to start the update process
             fetch('update.php')
                 .then(response => response.text())
                 .then(text => {
                     statusMessages.innerHTML = text;
                     if (text.includes("Pembaruan berhasil!")) {
-                        // Reload page after a short delay to show the new version number
                         setTimeout(() => window.location.reload(), 2000);
                     } else {
                         updateButton.disabled = false;

@@ -3,7 +3,6 @@
 include 'layout/header.php';
 require_once 'config.php';
 
-// Verifikasi sesi dan otentikasi
 if (!isset($_SESSION['auth_token'])) {
     header('Location: login.php');
     exit();
@@ -75,7 +74,6 @@ function callApi($endpoint, $method = 'GET', $data = [])
         throw new Exception("Respons API tidak valid: " . json_last_error_msg());
     }
     
-    // API akan mengembalikan status code 200/201 untuk sukses, atau 400+ untuk gagal
     if ($httpStatus >= 400) {
         $errorMessage = $responseData['message'] ?? "Gagal memuat data. Status: {$httpStatus}.";
         throw new Exception($errorMessage);
@@ -85,11 +83,6 @@ function callApi($endpoint, $method = 'GET', $data = [])
 }
 
 
-// =========================================================================
-// Penanganan Form dan Aksi untuk Domain
-// =========================================================================
-
-// Tangani aksi create
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'create') {
     try {
         $result = callApi('/domains', 'POST', [
@@ -103,7 +96,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
-// Tangani aksi update
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update') {
     try {
         $domainId = $_POST['domain_id'];
@@ -118,7 +110,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
-// Tangani aksi delete
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
     try {
         $domainId = $_POST['domain_id'];
@@ -129,7 +120,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
-// Tangani aksi edit (menampilkan formulir edit)
 if (isset($_GET['edit'])) {
     try {
         $editingDomain = callApi('/domains/' . $_GET['edit']);
@@ -138,7 +128,6 @@ if (isset($_GET['edit'])) {
     }
 }
 
-// Ambil daftar domain terbaru setelah setiap aksi
 try {
     $domains = callApi('/domains');
 } catch (Exception $e) {
@@ -150,7 +139,6 @@ try {
 <main class="p-6 md:p-10 lg:p-12 w-full font-sans">
     <h2 class="text-3xl font-bold text-gray-900 mb-6">Manajemen Domain</h2>
 
-    <!-- Pesan Status -->
     <?php if ($message): ?>
         <div class="p-4 mb-4 text-sm rounded-lg <?= $message['type'] === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' ?>" role="alert">
             <?= htmlspecialchars($message['text']) ?>
@@ -164,12 +152,9 @@ try {
         </div>
     <?php endif; ?>
     
-    <!-- Kontainer Fleksibel untuk Tata Letak Dua Kolom -->
     <div class="md:flex md:space-x-8">
 
-        <!-- Kolom Kiri: Formulir dan Tabel -->
         <div class="md:w-1/2">
-            <!-- Formulir Tambah/Edit Domain -->
             <div class="card p-6 shadow-xl bg-white mb-8">
                 <h3 class="text-xl font-semibold mb-4 text-gray-700">
                     <?= $editingDomain ? 'Edit Domain' : 'Tambah Domain Baru' ?>
@@ -202,7 +187,6 @@ try {
                 </form>
             </div>
             
-            <!-- Daftar Domain -->
             <div class="card p-6 shadow-xl bg-white mb-8">
                 <h3 class="text-xl font-semibold mb-4 text-gray-700">Daftar Domain</h3>
                 <div class="table-container overflow-x-auto">
@@ -256,9 +240,7 @@ try {
             </div>
         </div>
         
-        <!-- Kolom Kanan: Petunjuk DNS -->
         <div class="md:w-1/2">
-            <!-- Bagian Petunjuk Pengaturan DNS Cloudflare -->
             <div class="card p-6 shadow-xl bg-white mb-8">
                 <h3 class="text-xl font-semibold mb-4 text-gray-700">Petunjuk Pengaturan DNS (Khusus Cloudflare)</h3>
                 <p class="text-gray-600 mb-4">Untuk mengarahkan domain Anda ke livedate.sbs, ikuti langkah-langkah berikut di dashboard Cloudflare Anda:</p>

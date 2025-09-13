@@ -1,12 +1,10 @@
 <?php
-// move.php
 $sourceDir = 'update_temp/ApexTrack-Lite-master/';
 
 if (!is_dir($sourceDir)) {
     die("Error: Direktori sumber tidak ditemukan. Pembaruan gagal.\n");
 }
 
-// Fungsi untuk menyalin dan menghapus file secara rekursif
 function recursiveMove($src, $dst) {
     $dir = opendir($src);
     @mkdir($dst);
@@ -24,10 +22,8 @@ function recursiveMove($src, $dst) {
     rmdir($src);
 }
 
-// Pindahkan file ke direktori utama
 recursiveMove($sourceDir, './');
 
-// Hapus direktori sementara
 function rrmdir($dir) {
     if (is_dir($dir)) {
         $files = array_diff(scandir($dir), array('.', '..'));

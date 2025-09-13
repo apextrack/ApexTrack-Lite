@@ -3,7 +3,6 @@ include 'layout/header.php';
 
 require_once 'config.php';
 
-// Verifikasi sesi dan otentikasi
 if (!isset($_SESSION['auth_token'])) {
     header('Location: login.php');
     exit();
@@ -13,7 +12,6 @@ $token = $_SESSION['auth_token'];
 $offer = null;
 $error = null;
 
-// Pastikan ada ID di URL
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     $error = 'ID Offers tidak ditemukan. Silakan kembali ke halaman offers.';
 } else {
@@ -62,7 +60,6 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
             throw new Exception("Respons API tidak valid: " . json_last_error_msg());
         }
 
-        // Kembali ke data offers, karena endpoint show mengembalikan objek tunggal.
         return $responseData;
     }
 
@@ -77,7 +74,6 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 <main class="p-6 md:p-10 lg:p-12 w-full font-sans">
     <h2 class="text-3xl font-bold text-gray-900 mb-6">Edit Offers</h2>
 
-    <!-- Message Container -->
     <div id="message-container" class="mb-4 hidden">
         <div id="message-box" class="px-4 py-3 rounded-lg border relative" role="alert">
             <strong id="message-title" class="font-bold"></strong>
@@ -170,12 +166,11 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
             data[key] = value;
         });
 
-        // Pastikan checkbox yang tidak dicentang memiliki nilai
         data['can_show_to_proxy'] = formData.has('can_show_to_proxy');
 
         try {
             const response = await fetch(`${API_URL}/offers/${OFFER_ID}`, {
-                method: 'PUT', // Menggunakan PUT untuk pembaruan
+                method: 'PUT', 
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
@@ -188,7 +183,6 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 
             if (response.ok) {
                 showMessage('success', 'Berhasil', responseData.message);
-                // Redirect to offers.php after a short delay
                 setTimeout(() => {
                     window.location.href = 'offers.php?success=' + encodeURIComponent('Offers berhasil diperbarui.');
                 }, 1500);

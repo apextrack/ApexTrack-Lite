@@ -37,9 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'Accept: application/json'
         ]);
 
-        // Tambahkan timeout untuk cURL agar tidak hang jika API lambat
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // 10 detik untuk koneksi
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30); // 30 detik untuk seluruh operasi
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30); 
 
         $response = curl_exec($ch);
         $httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -54,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['user_id'] = $responseData['user']['id'];
                 $_SESSION['role'] = $responseData['user']['role'];
                 
-                // Redirect ke dashboard tanpa pesan
                 header('Location: dashboard.php');
                 exit();
             } else {
@@ -75,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: sans-serif; }
-        /* Spinner Loading Style */
         .loading-overlay {
             position: fixed;
             inset: 0;
@@ -91,13 +88,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .spinner {
             animation: spin 1s linear infinite;
             border-radius: 50%;
-            width: 64px; /* Ukuran spinner */
-            height: 64px; /* Ukuran spinner */
-            border-color: #3b82f6; /* Warna spinner (biru) */
+            width: 64px; 
+            height: 64px; 
+            border-color: #3b82f6; 
             border-style: solid;
-            border-width: 4px; /* Ketebalan border */
-            border-top-color: transparent; /* Bagian atas transparan */
-            border-left-color: transparent; /* Bagian kiri transparan */
+            border-width: 4px;
+            border-top-color: transparent; 
+            border-left-color: transparent;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -144,9 +141,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const loadingOverlay = document.getElementById('loading-overlay');
 
         loginForm.addEventListener('submit', () => {
-            // Tampilkan spinner saat form disubmit
             loadingOverlay.classList.remove('hidden');
-            loginButton.disabled = true; // Nonaktifkan tombol saat loading
+            loginButton.disabled = true; 
         });
     </script>
 </body>

@@ -9,7 +9,6 @@ if (!isset($_SESSION['auth_token'])) {
 
 $authToken = $_SESSION['auth_token'];
 
-// Token App untuk scraping, ditaruh di sini agar tidak terlihat oleh pengguna
 $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
 
 ?>
@@ -110,7 +109,7 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
 
     const form = document.getElementById('generator-form');
     const statusMessage = document.getElementById('status-message');
-    const loadingOverlay = document.getElementById('loading-overlay'); // Spinner overlay
+    const loadingOverlay = document.getElementById('loading-overlay'); 
     const resultSection = document.getElementById('result-section');
     const finalUrlLink = document.getElementById('final-url-link');
     const domainUrlContainer = document.getElementById('domain-url-container');
@@ -120,7 +119,7 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
     const shortenerChoiceContainer = document.getElementById('shortener-choice-container');
     const generateButton = document.getElementById('generate-button');
     const generateButtonText = document.getElementById('generate-button-text');
-    const spinner = document.getElementById('spinner'); // Spinner for the button
+    const spinner = document.getElementById('spinner'); 
 
     function showStatus(message, type) {
         statusMessage.innerHTML = message;
@@ -148,7 +147,7 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
     }
 
     async function fetchFormData() {
-        loadingOverlay.classList.remove('hidden'); // Show floating spinner
+        loadingOverlay.classList.remove('hidden'); 
         try {
             const response = await fetch(`${API_URL}/generator-data`, {
                 headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
@@ -180,7 +179,7 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
             console.error('Kesalahan saat mengambil data :', error);
             showStatus(`Gagal mengambil data: ${error.message}`, 'error');
         } finally {
-            loadingOverlay.classList.add('hidden'); // Hide floating spinner
+            loadingOverlay.classList.add('hidden');
         }
     }
 
@@ -280,7 +279,6 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
             finalUrlLink.href = finalUrl;
             finalUrlLink.textContent = finalUrl;
 
-            // URL Manipulation Logic
             const url = new URL(finalUrl);
             const domain = url.hostname;
             const subdomainParts = domain.split('.');
@@ -291,7 +289,6 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
                 finalUrlCode = subdomainParts[0];
                 finalDomainUrl = `https://${subdomainParts.slice(1).join('/')}`;
             } else {
-                // If there's no subdomain (e.g., example.com)
                 finalDomainUrl = finalUrl;
             }
 

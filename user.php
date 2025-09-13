@@ -117,7 +117,7 @@ $apiURL = BASE_API_URL;
     const emailInput = document.getElementById('email');
     const accountStatusSelect = document.getElementById('account_status');
     const expiredAtInput = document.getElementById('expired_at');
-    const loadingOverlay = document.getElementById('loading-overlay'); // New: Spinner overlay
+    const loadingOverlay = document.getElementById('loading-overlay'); 
 
     let statusTimeoutId = null;
 
@@ -129,12 +129,6 @@ $apiURL = BASE_API_URL;
         }
     }
 
-    /**
-     * Menampilkan pesan status di UI yang akan hilang secara otomatis.
-     * @param {string} message - Pesan yang akan ditampilkan.
-     * @param {string} type - Tipe pesan ('success', 'error', 'info').
-     * @param {number} duration - Durasi dalam milidetik pesan akan ditampilkan. Default 5000 (5 detik).
-     */
     function showStatus(message, type, duration = 5000) {
         clearTimeout(statusTimeoutId);
 
@@ -157,12 +151,9 @@ $apiURL = BASE_API_URL;
         }
     }
 
-    /**
-     * Mengambil data Users dari API dan mengisi tabel.
-     * @param {number} page - Halaman yang akan diambil.
-     */
+ 
     async function fetchUsers(page = 1) {
-        showLoadingState(true); // Show spinner on load
+        showLoadingState(true); 
         try {
             const response = await fetch(`${API_URL}/users?page=${page}`, {
                 headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
@@ -175,19 +166,15 @@ $apiURL = BASE_API_URL;
 
             renderUserTable(data.data);
             renderPagination(data);
-            // Removed: showStatus('Data Users berhasil dimuat.', 'success');
         } catch (error) {
             console.error('Kesalahan:', error);
             showStatus(`Gagal memuat data: ${error.message}`, 'error');
         } finally {
-            showLoadingState(false); // Hide spinner on success or failure
+            showLoadingState(false); 
         }
     }
 
-    /**
-     * Merender data Users ke dalam tabel HTML.
-     * @param {Array} users - Array objek Users.
-     */
+
     function renderUserTable(users) {
         userTableBody.innerHTML = '';
         if (users.length === 0) {
@@ -213,10 +200,6 @@ $apiURL = BASE_API_URL;
         });
     }
 
-    /**
-     * Merender navigasi pagination.
-     * @param {object} data - Objek data pagination dari API.
-     */
     function renderPagination(data) {
         paginationContainer.innerHTML = '';
         if (data.last_page > 1) {
@@ -233,26 +216,18 @@ $apiURL = BASE_API_URL;
         }
     }
 
-    /**
-     * Membuka modal form.
-     */
     function openModal() {
         userModal.classList.remove('hidden');
     }
 
-    /**
-     * Menutup modal form.
-     */
+
     function closeModal() {
         userModal.classList.add('hidden');
         userForm.reset();
         statusMessage.classList.add('hidden');
     }
 
-    /**
-     * Mengambil daftar peran yang tersedia dari API dan mengisi dropdown.
-     * @param {string|null} selectedRole - Peran yang akan dipilih secara default.
-     */
+
     async function fetchAndPopulateRoles(selectedRole = null) {
         try {
             const response = await fetch(`${API_URL}/user-roles`, {
@@ -349,10 +324,7 @@ $apiURL = BASE_API_URL;
         }
     });
 
-    /**
-     * Memuat data Users yang akan diedit ke dalam form.
-     * @param {string} userId - ID Users yang akan diedit.
-     */
+ 
     window.editUser = async (userId) => {
         showStatus('Memuat data Users...', 'info');
         try {
@@ -391,10 +363,7 @@ $apiURL = BASE_API_URL;
         }
     };
 
-    /**
-     * Menghapus Users dari database.
-     * @param {string} userId - ID Users yang akan dihapus.
-     */
+ 
     window.deleteUser = async (userId) => {
         if (!confirm('Apakah Anda yakin ingin menghapus Users ini?')) {
             return;

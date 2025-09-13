@@ -11,7 +11,6 @@ if (!isset($_SESSION['auth_token'])) {
 <main class="p-6 md:p-10 lg:p-12 w-full font-sans">
     <h2 class="text-3xl font-bold text-gray-900 mb-6">Create New Offer</h2>
     
-    <!-- Message Container -->
     <div id="message-container" class="mb-4 hidden">
         <div id="message-box" class="px-4 py-3 rounded-lg border relative" role="alert">
             <strong id="message-title" class="font-bold"></strong>
@@ -19,9 +18,7 @@ if (!isset($_SESSION['auth_token'])) {
         </div>
     </div>
 
-    <!-- Main Content Container with two columns -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Left Column: Form -->
         <div>
             <div class="card p-6 shadow-xl bg-white">
                 <form id="offer-form">
@@ -67,9 +64,7 @@ if (!isset($_SESSION['auth_token'])) {
             </div>
         </div>
 
-        <!-- Right Column: Example URLs and Postback -->
         <div>
-            <!-- Example Offer URL Table -->
             <div class="card p-6 shadow-xl bg-white mb-6">
                 <h4 class="text-xl font-semibold mb-3">Example Offer URL</h4>
                 <div class="overflow-x-auto">
@@ -149,7 +144,6 @@ if (!isset($_SESSION['auth_token'])) {
                 </div>
             </div>
 
-            <!-- S2S Postback URL Table -->
             <div class="card p-6 shadow-xl bg-white">
                 <h4 class="text-xl font-semibold mb-3">S2S Postback URL Examples</h4>
                 <div class="overflow-x-auto">

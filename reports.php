@@ -1,36 +1,26 @@
 <?php
-
-// Sertakan file header, yang sudah menangani session_start() dan otentikasi.
-// Pastikan path-nya benar sesuai dengan struktur folder Anda.
 include 'layout/header.php';
-
-// Sertakan file konfigurasi
-// Pastikan path ke file config.php sudah benar.
 include 'config.php';
 
-// Pastikan token otentikasi tersedia di sesi
+
 if (!isset($_SESSION['auth_token'])) {
     die("Akses ditolak. Token otentikasi tidak ditemukan.");
 }
 
 $apiToken = $_SESSION['auth_token'];
-$baseUrl = BASE_API_URL; // Menggunakan konstanta dari config.php
-$limit = 50; // Batas item per halaman
+$baseUrl = BASE_API_URL;
+$limit = 50;
 
-// Tentukan view yang aktif dari parameter URL
-// Default ke 'advance' jika tidak ada yang ditentukan
+
 $activeView = $_GET['view'] ?? 'advance';
 
-// Data filter dari request
 $startDate = $_GET['start_date'] ?? null;
 $endDate = $_GET['end_date'] ?? null;
 $username = $_GET['username'] ?? 'all';
 $breakdownBy = $_GET['breakdown_by'] ?? 'country_code';
 
-// Parameter paginasi
 $page = (int)($_GET['page'] ?? 1);
 
-// Helper function untuk melakukan panggilan API menggunakan cURL
 function callApi($url, $token, $params) {
     $queryString = http_build_query($params);
     $fullUrl = $url . '?' . $queryString;
@@ -54,19 +44,18 @@ function callApi($url, $token, $params) {
     return json_decode($response, true);
 }
 
-// Variabel untuk menyimpan data dan total item
-$reportData = null;
-$totalItems = 0; // Default total item
-$totalPages = 0; // Default total halaman
 
-// Ambil data hanya untuk view yang aktif
+$reportData = null;
+$totalItems = 0;
+$totalPages = 0;
+
 switch ($activeView) {
     case 'advance':
         $reportData = callApi($baseUrl . '/reports/advance', $apiToken, [
             'start_date' => $startDate,
             'end_date' => $endDate,
             'username' => $username,
-            'page' => $page, // Tambahkan parameter paginasi
+            'page' => $page,
             'limit' => $limit,
         ]);
         break;
@@ -100,14 +89,11 @@ switch ($activeView) {
         break;
 }
 
-// Jika ada data, hitung total item dan total halaman
 if (isset($reportData) && !isset($reportData['error'])) {
-    // Asumsikan API mengembalikan 'total' di metadata atau menghitungnya dari array data
     $totalItems = $reportData['total'] ?? count($reportData['data']);
     $totalPages = ceil($totalItems / $limit);
 }
 
-// Fungsi untuk membangun URL dengan parameter filter yang ada
 function buildFilterUrl($view, $currentParams, $page = null) {
     $params = [
         'view' => $view,
@@ -117,12 +103,10 @@ function buildFilterUrl($view, $currentParams, $page = null) {
         'breakdown_by' => $currentParams['breakdown_by'] ?? null,
     ];
     
-    // Tambahkan parameter halaman jika diberikan
     if ($page !== null) {
         $params['page'] = $page;
     }
 
-    // Hapus parameter yang kosong untuk URL yang lebih bersih
     $params = array_filter($params, function($value) {
         return $value !== null && $value !== '';
     });
@@ -130,7 +114,6 @@ function buildFilterUrl($view, $currentParams, $page = null) {
     return '?' . http_build_query($params);
 }
 
-// Gunakan fungsi untuk membuat URL navigasi
 $advanceUrl = buildFilterUrl('advance', $_GET);
 $clicksUrl = buildFilterUrl('clicks', $_GET);
 $leadsUrl = buildFilterUrl('leads', $_GET);
@@ -376,6 +359,5 @@ $breakdownUrl = buildFilterUrl('breakdown', $_GET);
 </main>
 
 <?php
-// Sertakan file footer dari layout.
 include 'layout/footer.php';
 ?>

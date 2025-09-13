@@ -3,7 +3,6 @@ include 'layout/header.php';
 
 require_once 'config.php';
 
-// Verifikasi sesi dan otentikasi
 if (!isset($_SESSION['auth_token'])) {
     header('Location: login.php');
     exit();
@@ -57,8 +56,7 @@ function fetchData($endpoint, $token)
     if (json_last_error() !== JSON_ERROR_NONE) {
         throw new Exception("Respons API tidak valid: " . json_last_error_msg());
     }
-    // API offers/index mengembalikan data yang langsung dapat diakses, tanpa 'data'
-    // Jadi, kita hanya perlu mengembalikan seluruh respons jika tidak ada kunci 'data'.
+
     return $responseData['data'] ?? $responseData; 
 }
 
@@ -66,7 +64,6 @@ $offers = [];
 $error = null;
 
 try {
-    // Mengambil data offers dari API
     $offers = fetchData(BASE_API_URL . '/offers', $token);
 } catch (Exception $e) {
     $error = $e->getMessage();
@@ -77,7 +74,6 @@ try {
 <main class="p-6 md:p-10 lg:p-12 w-full font-sans">
     <h2 class="text-3xl font-bold text-gray-900 mb-6">Offers Management</h2>
 
-    <!-- Message Container -->
     <div id="message-container" class="mb-4 hidden">
         <div id="message-box" class="px-4 py-3 rounded-lg border relative" role="alert">
             <strong id="message-title" class="font-bold"></strong>
@@ -138,11 +134,9 @@ try {
                                     <?php echo ($offer['can_show_to_proxy'] ?? false) ? 'Ya' : 'Tidak'; ?>
                                 </td>
                                 <td class="py-3 px-4 whitespace-nowrap text-right text-sm font-medium flex gap-2">
-                                    <!-- Edit link with Font Awesome icon -->
                                     <a href="edit-offers.php?id=<?php echo htmlspecialchars($offer['id'] ?? ''); ?>" class="text-indigo-600 hover:text-indigo-900 transition-colors" title="Edit">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </a>
-                                    <!-- Delete button with Font Awesome icon -->
                                     <button onclick='confirmDelete(<?php echo htmlspecialchars(json_encode($offer['id']), ENT_QUOTES, 'UTF-8'); ?>)' class="text-red-600 hover:text-red-900 transition-colors" title="Hapus">
                                         <i class="fa-solid fa-trash-can"></i>
                                     </button>
@@ -162,7 +156,6 @@ try {
     </div>
 </main>
 
-<!-- Delete Confirmation Modal -->
 <div id="delete-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden flex items-center justify-center">
     <div class="relative p-8 bg-white w-96 max-w-md m-auto flex-col flex rounded-lg shadow-lg text-center">
         <h3 class="text-lg font-bold mb-4">Konfirmasi Penghapusan</h3>
@@ -218,13 +211,11 @@ try {
             if (response.ok) {
                 showMessage('success', 'Berhasil', data.message);
                 
-                // Cari dan hapus baris tabel yang sesuai
                 const row = document.querySelector(`tr[data-id='${id}']`);
                 if (row) {
                     row.remove();
                 }
                 
-                // Tambahkan pesan jika tabel kosong
                 if (document.querySelector('#offers-table tbody').children.length === 0) {
                     const noOffersRow = document.createElement('tr');
                     noOffersRow.innerHTML = `<td colspan="7" class="px-4 py-4 text-center text-sm text-gray-500">Tidak ada offers yang ditemukan.</td>`;
@@ -243,20 +234,17 @@ try {
         document.getElementById('delete-modal').classList.add('hidden');
     });
 
-    // Handle closing the modal when clicking outside
     document.getElementById('delete-modal').addEventListener('click', (e) => {
         if (e.target === e.currentTarget) {
             document.getElementById('delete-modal').classList.add('hidden');
         }
     });
 
-    // Check for a success message in the URL after a successful redirect
     document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const successMessage = urlParams.get('success');
         if (successMessage) {
             showMessage('success', 'Berhasil', successMessage);
-            // Bersihkan parameter dari URL agar tidak muncul lagi saat refresh
             window.history.replaceState({}, document.title, window.location.pathname);
         }
     });

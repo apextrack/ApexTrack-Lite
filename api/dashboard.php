@@ -58,7 +58,7 @@ try {
     $dashboardData = fetchData(BASE_API_URL . $endpoint, $token);
     echo json_encode($dashboardData);
 } catch (Exception $e) {
-    http_response_code(500); // Internal Server Error
+    http_response_code(500);
     echo json_encode(['error' => $e->getMessage()]);
 }
 ?>

@@ -1,5 +1,5 @@
 <?php
-include 'layout/header.php'; // Memuat header, termasuk CSS dan JS
+include 'layout/header.php'; 
 
 if (!isset($_SESSION['auth_token'])) {
     header('Location: login.php?error=' . urlencode('Sesi Anda telah berakhir. Silakan login kembali.'));
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchDataAndRender = async () => {
         try {
-            const response = await fetch('api/dashboard.php'); // Pastikan path ini benar
+            const response = await fetch('api/dashboard.php'); 
             const data = await response.json();
 
             if (!response.ok) {
@@ -140,16 +140,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(data.error || 'Failed to fetch data.');
             }
 
-            // Render Summary Cards
             document.getElementById('clicks-today').textContent = new Intl.NumberFormat().format(data.summary.today_clicks || 0);
             document.getElementById('conversions-today').textContent = new Intl.NumberFormat().format(data.summary.today_leads || 0);
             document.getElementById('revenue-today').textContent = '$' + new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.summary.today_revenue || 0);
             document.getElementById('epc-today').textContent = '$' + new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.summary.today_epc || 0);
 
-            // Render Tables
             const renderTable = (tableBodyId, tableData, columns, emptyMessage) => {
                 const tableBody = document.getElementById(tableBodyId);
-                tableBody.innerHTML = ''; // Clear old content
+                tableBody.innerHTML = ''; 
 
                 if (tableData && tableData.length > 0) {
                     tableData.forEach(row => {
@@ -159,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             td.className = 'py-3 px-4 text-sm text-gray-700 border border-gray-300';
                             let content = row[col.key] ?? 'N/A';
                             
-                            // Custom rendering for specific columns
                             if (col.key === 'country_code') {
                                 const countryCode = (row.country_code ?? 'us').toLowerCase();
                                 const flagCode = countryCode === 'uk' ? 'gb' : countryCode;
@@ -178,15 +175,15 @@ document.addEventListener('DOMContentLoaded', () => {
                                 content = date.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + date.toLocaleTimeString('id-ID');
                                 td.textContent = content;
                             } else if (col.key === 'payout' || col.key === 'revenue') {
-                                const value = parseFloat(row.payout || row.revenue) || 0; // Fix: Use parseFloat
+                                const value = parseFloat(row.payout || row.revenue) || 0; 
                                 content = `$${value.toFixed(2)}`;
                                 td.textContent = content;
                             } else if (col.key === 'cr') {
-                                const value = parseFloat(row.cr) || 0; // Fix: Use parseFloat
+                                const value = parseFloat(row.cr) || 0;
                                 content = `${value.toFixed(2)}%`;
                                 td.textContent = content;
                             } else if (col.key === 'epc') {
-                                const value = parseFloat(row.epc) || 0; // Fix: Use parseFloat
+                                const value = parseFloat(row.epc) || 0;
                                 content = `$${value.toFixed(2)}`;
                                 td.textContent = content;
                             } else if (col.key === 'hits' || col.key === 'conversions') {
@@ -207,7 +204,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
             
-            // Define columns for each table
             const recentClicksColumns = [
                 { key: 'sub_id' },
                 { key: 'offer_name' },
@@ -237,25 +233,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 { key: 'created_at' }
             ];
 
-            // Render all tables
             renderTable('recent-clicks-table-body', data.recent_clicks, recentClicksColumns, 'Tidak ada klik terbaru hari ini.');
             renderTable('performance-report-table-body', data.performance_report, performanceReportColumns, 'Tidak ada data untuk laporan kinerja.');
             renderTable('recent-conversions-table-body', data.recent_leads, recentConversionsColumns, 'Tidak ada konversi terbaru hari ini.');
 
         } catch (error) {
             console.error('Error fetching dashboard data:', error);
-            // Anda dapat menambahkan pesan error di UI
         }
     };
 
-    // Panggil fungsi saat halaman dimuat
     fetchDataAndRender();
 
-    // Perbarui data setiap 30 detik
-    setInterval(fetchDataAndRender, 30000); // 30000ms = 30 detik
+    setInterval(fetchDataAndRender, 30000); 
 });
 </script>
 
 <?php
-include 'layout/footer.php'; // Memuat footer
+include 'layout/footer.php'; 
 ?>
