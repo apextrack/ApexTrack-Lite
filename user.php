@@ -10,7 +10,10 @@ $apiURL = BASE_API_URL;
 <main class="flex-grow p-6 md:p-10 lg:p-12">
     <h2 class="text-3xl font-bold text-gray-800 mb-6">Manajemen Users</h2>
     <div class="mx-auto bg-white p-8 shadow-lg">
- 
+
+        <div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+        </div>
 
         <div class="flex justify-end mb-6">
             <button id="add-user-btn" class="py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
@@ -33,12 +36,12 @@ $apiURL = BASE_API_URL;
                     </tr>
                 </thead>
                 <tbody id="user-table-body">
-                    </tbody>
+                </tbody>
             </table>
         </div>
 
         <div class="flex justify-center mt-6" id="pagination-container">
-            </div>
+        </div>
     </div>
 </main>
 
@@ -69,7 +72,7 @@ $apiURL = BASE_API_URL;
             <div>
                 <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
                 <select id="role" name="role" required class="mt-1 block w-full px-4 py-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    </select>
+                </select>
             </div>
             <div>
                 <label for="account_status" class="block text-sm font-medium text-gray-700">Status Akun</label>
@@ -101,7 +104,7 @@ $apiURL = BASE_API_URL;
     const paginationContainer = document.getElementById('pagination-container');
     const addUserBtn = document.getElementById('add-user-btn');
     const userModal = document.getElementById('user-modal');
-    const closeBtn = document.getElementById('close-modal-btn');
+    const closeModalBtn = document.getElementById('close-modal-btn');
     const cancelBtn = document.getElementById('cancel-btn');
     const userForm = document.getElementById('user-form');
     const modalTitle = document.getElementById('modal-title');
@@ -114,8 +117,17 @@ $apiURL = BASE_API_URL;
     const emailInput = document.getElementById('email');
     const accountStatusSelect = document.getElementById('account_status');
     const expiredAtInput = document.getElementById('expired_at');
+    const loadingOverlay = document.getElementById('loading-overlay'); // New: Spinner overlay
 
     let statusTimeoutId = null;
+
+    function showLoadingState(isLoading) {
+        if (isLoading) {
+            loadingOverlay.classList.remove('hidden');
+        } else {
+            loadingOverlay.classList.add('hidden');
+        }
+    }
 
     /**
      * Menampilkan pesan status di UI yang akan hilang secara otomatis.
@@ -125,7 +137,7 @@ $apiURL = BASE_API_URL;
      */
     function showStatus(message, type, duration = 5000) {
         clearTimeout(statusTimeoutId);
-        
+
         statusMessage.innerHTML = message;
         statusMessage.className = 'mb-4 p-4 text-center rounded-lg';
         statusMessage.classList.remove('hidden');
@@ -137,7 +149,6 @@ $apiURL = BASE_API_URL;
         } else if (type === 'info') {
             statusMessage.classList.add('bg-blue-100', 'text-blue-700');
         }
-
 
         if (type !== 'info') {
             statusTimeoutId = setTimeout(() => {
@@ -151,7 +162,7 @@ $apiURL = BASE_API_URL;
      * @param {number} page - Halaman yang akan diambil.
      */
     async function fetchUsers(page = 1) {
-        showStatus('Memuat data Users...', 'info');
+        showLoadingState(true); // Show spinner on load
         try {
             const response = await fetch(`${API_URL}/users?page=${page}`, {
                 headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
@@ -164,10 +175,12 @@ $apiURL = BASE_API_URL;
 
             renderUserTable(data.data);
             renderPagination(data);
-            showStatus('Data Users berhasil dimuat.', 'success');
+            // Removed: showStatus('Data Users berhasil dimuat.', 'success');
         } catch (error) {
             console.error('Kesalahan:', error);
             showStatus(`Gagal memuat data: ${error.message}`, 'error');
+        } finally {
+            showLoadingState(false); // Hide spinner on success or failure
         }
     }
 
@@ -250,7 +263,7 @@ $apiURL = BASE_API_URL;
             if (!response.ok) {
                 throw new Error(roles.message || 'Gagal memuat peran Users.');
             }
-            
+
             roleSelect.innerHTML = '';
             roles.forEach(role => {
                 const option = document.createElement('option');
@@ -280,7 +293,7 @@ $apiURL = BASE_API_URL;
         openModal();
     });
 
-    closeBtn.addEventListener('click', closeModal);
+    closeModalBtn.addEventListener('click', closeModal);
     cancelBtn.addEventListener('click', closeModal);
 
     userForm.addEventListener('submit', async (e) => {
@@ -299,7 +312,7 @@ $apiURL = BASE_API_URL;
             password_confirmation: passwordConfirmInput.value,
             expired_at: expiredAtInput.value || null
         };
-        
+
         if (userId && !passwordInput.value) {
             delete data.password;
             delete data.password_confirmation;
@@ -359,7 +372,7 @@ $apiURL = BASE_API_URL;
             accountStatusSelect.value = user.account_status;
             passwordInput.required = false;
             passwordConfirmInput.required = false;
-            
+
             await fetchAndPopulateRoles(user.role);
 
             if (user.role === 'admin' || user.role === 'user') {
@@ -369,7 +382,7 @@ $apiURL = BASE_API_URL;
                 expiredAtContainer.classList.add('hidden');
                 expiredAtInput.value = '';
             }
-            
+
             openModal();
             showStatus('Data Users siap untuk diedit.', 'success');
         } catch (error) {
@@ -398,7 +411,7 @@ $apiURL = BASE_API_URL;
                 const data = await response.json();
                 throw new Error(data.message || 'Gagal menghapus Users.');
             }
-            
+
             fetchUsers();
             showStatus('Users berhasil dihapus.', 'success');
         } catch (error) {

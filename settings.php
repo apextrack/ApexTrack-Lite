@@ -21,7 +21,7 @@ $repoName = 'ApexTrack-Lite';
 $versionFileLocal = 'version.txt';
 $versionFileGithub = "https://raw.githubusercontent.com/{$repoOwner}/{$repoName}/master/version.txt";
 
-$currentVersion = '1.2.5'; // Versi fallback jika gagal terhubung
+$currentVersion = '1.2.6'; // Versi fallback jika gagal terhubung
 $context = stream_context_create([
     'http' => ['header' => 'User-Agent: PHP-Script']
 ]);

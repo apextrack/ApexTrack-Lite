@@ -1,6 +1,6 @@
 <?php
 include 'layout/header.php';
-require_once 'config.php'; 
+require_once 'config.php';
 
 if (!isset($_SESSION['auth_token'])) {
     header('Location: login.php');
@@ -18,6 +18,10 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
     <h2 class="text-3xl font-bold text-gray-900 mb-6">Smartlink Generator</h2>
     <div class="mx-auto bg-white p-8 shadow-lg">
         <div id="status-message" class="hidden mb-4 p-4 text-center rounded-lg"></div>
+
+        <div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+        </div>
 
         <form id="generator-form" enctype="multipart/form-data" class="space-y-6">
             <div class="border border-gray-300 p-6 mb-6">
@@ -70,8 +74,12 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
                     </div>
                 </div>
             </div>
-            <button type="submit" class="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
-                Generate Smartlink
+            <button type="submit" id="generate-button" class="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out flex items-center justify-center">
+                <span id="generate-button-text">Generate Smartlink</span>
+                <svg id="spinner" class="hidden animate-spin h-5 w-5 text-white ml-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 8l2.938-3.709z"></path>
+                </svg>
             </button>
         </form>
 
@@ -82,19 +90,13 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
                     <p class="text-sm font-medium text-gray-700">URL Final:</p>
                     <a id="final-url-link" href="#" target="_blank" class="text-blue-600 font-semibold break-all hover:underline"></a>
                 </div>
-                <div id="first-shortened-url-container" class="hidden bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                    <p class="text-sm font-medium text-gray-700">Url Smartlink/Shortlink:</p>
-                    <a id="first-shortened-url-link" href="#" target="_blank" class="text-blue-600 font-semibold break-all hover:underline"></a>
+                <div id="domain-url-container" class="hidden bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                    <p class="text-sm font-medium text-gray-700">URL Domain:</p>
+                    <a id="domain-url-link" href="#" target="_blank" class="text-blue-600 font-semibold break-all hover:underline"></a>
                 </div>
-            </div>
-            <div id="scraping-log" class="hidden mt-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                <h4 class="text-md font-semibold text-gray-800 mb-2">Log Scraping</h4>
-                <div id="log-content">
-                    <p id="log-message" class="text-gray-600"></p>
-                    <pre id="log-details" class="bg-gray-100 p-2 text-sm text-gray-700 rounded overflow-auto mt-2"></pre>
-                    <button id="scrape-again-button" class="hidden mt-4 w-full py-2 px-4 bg-yellow-500 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-600 transition duration-300 ease-in-out">
-                        Scrape Ulang
-                    </button>
+                <div id="first-shortened-url-container" class="hidden bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                    <p class="text-sm font-medium text-gray-700">Url Smartlink:</p>
+                    <a id="first-shortened-url-link" href="#" target="_blank" class="text-blue-600 font-semibold break-all hover:underline"></a>
                 </div>
             </div>
         </div>
@@ -108,15 +110,17 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
 
     const form = document.getElementById('generator-form');
     const statusMessage = document.getElementById('status-message');
+    const loadingOverlay = document.getElementById('loading-overlay'); // Spinner overlay
     const resultSection = document.getElementById('result-section');
     const finalUrlLink = document.getElementById('final-url-link');
+    const domainUrlContainer = document.getElementById('domain-url-container');
+    const domainUrlLink = document.getElementById('domain-url-link');
     const firstShortenedUrlContainer = document.getElementById('first-shortened-url-container');
     const firstShortenedUrlLink = document.getElementById('first-shortened-url-link');
     const shortenerChoiceContainer = document.getElementById('shortener-choice-container');
-    const scrapingLog = document.getElementById('scraping-log');
-    const logMessage = document.getElementById('log-message');
-    const logDetails = document.getElementById('log-details');
-    const scrapeAgainButton = document.getElementById('scrape-again-button');
+    const generateButton = document.getElementById('generate-button');
+    const generateButtonText = document.getElementById('generate-button-text');
+    const spinner = document.getElementById('spinner'); // Spinner for the button
 
     function showStatus(message, type) {
         statusMessage.innerHTML = message;
@@ -131,67 +135,52 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
         statusMessage.classList.remove('hidden');
     }
 
+    function showButtonLoadingState(isLoading) {
+        if (isLoading) {
+            generateButtonText.classList.add('hidden');
+            spinner.classList.remove('hidden');
+            generateButton.disabled = true;
+        } else {
+            generateButtonText.classList.remove('hidden');
+            spinner.classList.add('hidden');
+            generateButton.disabled = false;
+        }
+    }
+
     async function fetchFormData() {
+        loadingOverlay.classList.remove('hidden'); // Show floating spinner
         try {
-            showStatus('Memuat data formulir...', 'info');
             const response = await fetch(`${API_URL}/generator-data`, {
                 headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
             });
             const data = await response.json();
-            
+
             if (!response.ok) {
-                let errorMessage = data.message || 'Gagal mengambil data formulir.';
+                let errorMessage = data.message || 'Gagal mengambil data.';
                 if (response.status === 403) {
                     errorMessage = 'Unauthorized action. Mohon login ulang.';
                 }
                 throw new Error(errorMessage);
             }
-            
+
             populateSelect('offer', data.offers, 'Offers', 'id', 'name');
             populateSelect('shared_domain', data.domains, 'Domain', null, null);
             populateSelect('redirect_type', data.redirect_types, 'Redirect', null, null);
+            populateSelectWithOptions('type', data.types, 'Smartlink', { 'render': 'Render Halaman', 'redirect': 'Redirect Langsung' });
+            populateSelectWithOptions('generation_mode', data.generation_modes, 'Mode', { 'smartlink_external_self': 'Double Shortener', 'smartlink_self': 'Single Shortener' });
             
-            const typeSelect = document.getElementById('type');
-            const typeMapping = { 'render': 'Render Halaman', 'redirect': 'Redirect Langsung' };
-            typeSelect.innerHTML = '';
-            const defaultTypeOption = document.createElement('option');
-            defaultTypeOption.textContent = 'Smartlink';
-            defaultTypeOption.value = '';
-            typeSelect.appendChild(defaultTypeOption);
-            if (data.types) {
-                data.types.forEach(type => {
-                    const option = document.createElement('option');
-                    option.value = type;
-                    option.textContent = typeMapping[type] || type;
-                    typeSelect.appendChild(option);
-                });
-            }
-
             const generationModeSelect = document.getElementById('generation_mode');
-            const generationModeMapping = { 'smartlink_external_self': 'Double Shortener', 'smartlink_self': 'Single Shortener' };
-            generationModeSelect.innerHTML = '';
-            const defaultModeOption = document.createElement('option');
-            defaultModeOption.textContent = 'Mode';
-            defaultModeOption.value = '';
-            generationModeSelect.appendChild(defaultModeOption);
-            if (data.generation_modes) {
-                data.generation_modes.forEach(mode => {
-                    const option = document.createElement('option');
-                    option.value = mode;
-                    option.textContent = generationModeMapping[mode] || mode;
-                    generationModeSelect.appendChild(option);
-                });
-            }
             generationModeSelect.addEventListener('change', (e) => {
                 shortenerChoiceContainer.style.display = e.target.value === 'smartlink_external_self' ? 'block' : 'none';
             });
             generationModeSelect.dispatchEvent(new Event('change'));
+            
             populateSelect('shortener_choice', data.shortener_choices, 'Shortner', null, null);
-            showStatus('Data formulir berhasil dimuat.', 'success');
-            setTimeout(() => { statusMessage.classList.add('hidden'); }, 3000);
         } catch (error) {
-            console.error('Kesalahan saat mengambil data formulir:', error);
-            showStatus(`Gagal mengambil data formulir: ${error.message}`, 'error');
+            console.error('Kesalahan saat mengambil data :', error);
+            showStatus(`Gagal mengambil data: ${error.message}`, 'error');
+        } finally {
+            loadingOverlay.classList.add('hidden'); // Hide floating spinner
         }
     }
 
@@ -212,13 +201,24 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
         }
     }
 
-    async function performScraping(url) {
-        showStatus('Memulai scraping Graph API...', 'info');
-        scrapingLog.classList.remove('hidden');
-        logMessage.textContent = 'Mengirim permintaan scraping...';
-        logDetails.textContent = '...';
-        scrapeAgainButton.classList.add('hidden');
+    function populateSelectWithOptions(selectId, data, placeholder, mapping) {
+        const select = document.getElementById(selectId);
+        select.innerHTML = '';
+        const defaultOption = document.createElement('option');
+        defaultOption.textContent = placeholder;
+        defaultOption.value = '';
+        select.appendChild(defaultOption);
+        if (data) {
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item;
+                option.textContent = mapping[item] || item;
+                select.appendChild(option);
+            });
+        }
+    }
 
+    async function performScraping(url) {
         try {
             const scrapingData = new FormData();
             scrapingData.append('url', url);
@@ -232,19 +232,13 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
             const scrapeResult = await scrapeResponse.json();
 
             if (scrapeResult.error) {
-                logMessage.textContent = '❌ Scraping Gagal!';
-                logDetails.textContent = JSON.stringify(scrapeResult.error, null, 2);
-                scrapeAgainButton.classList.remove('hidden');
+                console.error('Scraping Gagal:', scrapeResult.error.message);
                 showStatus('Scraping Gagal: ' + scrapeResult.error.message, 'error');
             } else {
-                logMessage.textContent = '✅ Scraping Berhasil!';
-                logDetails.textContent = JSON.stringify(scrapeResult, null, 2);
-                showStatus('Scraping berhasil! Log meta tags ada di bawah.', 'success');
+                showStatus('Proses berhasil! Semua URL telah dibuat dan meta tags telah diperbarui.', 'success');
+                setTimeout(() => { statusMessage.classList.add('hidden'); }, 5000);
             }
         } catch (scrapeError) {
-            logMessage.textContent = '❌ Kesalahan saat memicu scraping.';
-            logDetails.textContent = scrapeError.message;
-            scrapeAgainButton.classList.remove('hidden');
             console.error('Kesalahan saat memicu scraping:', scrapeError);
             showStatus('Gagal memicu scraping: ' + scrapeError.message, 'error');
         }
@@ -252,16 +246,16 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        showStatus('Sedang memproses...', 'info');
+        showButtonLoadingState(true);
         resultSection.classList.add('hidden');
-        scrapingLog.classList.add('hidden');
+        statusMessage.classList.add('hidden');
 
         const formData = new FormData(form);
         const generationMode = formData.get('generation_mode');
         if (generationMode !== 'smartlink_external_self') {
             formData.delete('shortener_choice');
         }
-        
+
         try {
             const response = await fetch(`${API_URL}/generate-smartlink`, {
                 method: 'POST',
@@ -279,11 +273,35 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
                 }
                 throw new Error(errorMessage);
             }
-            
-            showStatus('URL berhasil dibuat!', 'success');
+
             resultSection.classList.remove('hidden');
-            finalUrlLink.href = data.final_shared_url;
-            finalUrlLink.textContent = data.final_shared_url;
+
+            const finalUrl = data.final_shared_url;
+            finalUrlLink.href = finalUrl;
+            finalUrlLink.textContent = finalUrl;
+
+            // URL Manipulation Logic
+            const url = new URL(finalUrl);
+            const domain = url.hostname;
+            const subdomainParts = domain.split('.');
+            let finalDomainUrl = '';
+            let finalUrlCode = '';
+
+            if (subdomainParts.length > 2) {
+                finalUrlCode = subdomainParts[0];
+                finalDomainUrl = `https://${subdomainParts.slice(1).join('/')}`;
+            } else {
+                // If there's no subdomain (e.g., example.com)
+                finalDomainUrl = finalUrl;
+            }
+
+            if (finalDomainUrl && finalUrlCode) {
+                domainUrlContainer.classList.remove('hidden');
+                domainUrlLink.href = `${finalDomainUrl}/${finalUrlCode}`;
+                domainUrlLink.textContent = `${finalDomainUrl}/${finalUrlCode}`;
+            } else {
+                domainUrlContainer.classList.add('hidden');
+            }
 
             if (data.smartlink_url_after_first_shortening) {
                 firstShortenedUrlContainer.classList.remove('hidden');
@@ -294,20 +312,13 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
             }
 
             await performScraping(data.final_shared_url);
-            
+
         } catch (error) {
             console.error('Kesalahan saat membuat URL:', error);
             showStatus(`Gagal membuat URL: ${error.message}`, 'error');
             resultSection.classList.add('hidden');
-        }
-    });
-
-    scrapeAgainButton.addEventListener('click', () => {
-        const urlToScrape = finalUrlLink.href;
-        if (urlToScrape && urlToScrape !== '#') {
-            performScraping(urlToScrape);
-        } else {
-            showStatus('URL tidak ditemukan untuk scraping ulang.', 'error');
+        } finally {
+            showButtonLoadingState(false);
         }
     });
 
