@@ -9,6 +9,7 @@ if (!isset($_SESSION['auth_token'])) {
 
 $authToken = $_SESSION['auth_token'];
 
+// Token App untuk scraping, ditaruh di sini agar tidak terlihat oleh pengguna
 $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
 
 ?>
@@ -17,10 +18,6 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
     <h2 class="text-3xl font-bold text-gray-900 mb-6">Smartlink Generator</h2>
     <div class="mx-auto bg-white p-8 shadow-lg">
         <div id="status-message" class="hidden mb-4 p-4 text-center rounded-lg"></div>
-
-        <div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
-            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
-        </div>
 
         <form id="generator-form" enctype="multipart/form-data" class="space-y-6">
             <div class="border border-gray-300 p-6 mb-6">
@@ -109,7 +106,6 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
 
     const form = document.getElementById('generator-form');
     const statusMessage = document.getElementById('status-message');
-    const loadingOverlay = document.getElementById('loading-overlay'); 
     const resultSection = document.getElementById('result-section');
     const finalUrlLink = document.getElementById('final-url-link');
     const domainUrlContainer = document.getElementById('domain-url-container');
@@ -119,7 +115,7 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
     const shortenerChoiceContainer = document.getElementById('shortener-choice-container');
     const generateButton = document.getElementById('generate-button');
     const generateButtonText = document.getElementById('generate-button-text');
-    const spinner = document.getElementById('spinner'); 
+    const spinner = document.getElementById('spinner');
 
     function showStatus(message, type) {
         statusMessage.innerHTML = message;
@@ -134,7 +130,7 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
         statusMessage.classList.remove('hidden');
     }
 
-    function showButtonLoadingState(isLoading) {
+    function showLoadingState(isLoading) {
         if (isLoading) {
             generateButtonText.classList.add('hidden');
             spinner.classList.remove('hidden');
@@ -147,8 +143,8 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
     }
 
     async function fetchFormData() {
-        loadingOverlay.classList.remove('hidden'); 
         try {
+            showStatus('Memuat data...', 'info');
             const response = await fetch(`${API_URL}/generator-data`, {
                 headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
             });
@@ -165,21 +161,48 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
             populateSelect('offer', data.offers, 'Offers', 'id', 'name');
             populateSelect('shared_domain', data.domains, 'Domain', null, null);
             populateSelect('redirect_type', data.redirect_types, 'Redirect', null, null);
-            populateSelectWithOptions('type', data.types, 'Smartlink', { 'render': 'Render Halaman', 'redirect': 'Redirect Langsung' });
-            populateSelectWithOptions('generation_mode', data.generation_modes, 'Mode', { 'smartlink_external_self': 'Double Shortener', 'smartlink_self': 'Single Shortener' });
-            
+
+            const typeSelect = document.getElementById('type');
+            const typeMapping = { 'render': 'Render Halaman', 'redirect': 'Redirect Langsung' };
+            typeSelect.innerHTML = '';
+            const defaultTypeOption = document.createElement('option');
+            defaultTypeOption.textContent = 'Smartlink';
+            defaultTypeOption.value = '';
+            typeSelect.appendChild(defaultTypeOption);
+            if (data.types) {
+                data.types.forEach(type => {
+                    const option = document.createElement('option');
+                    option.value = type;
+                    option.textContent = typeMapping[type] || type;
+                    typeSelect.appendChild(option);
+                });
+            }
+
             const generationModeSelect = document.getElementById('generation_mode');
+            const generationModeMapping = { 'smartlink_external_self': 'Double Shortener', 'smartlink_self': 'Single Shortener' };
+            generationModeSelect.innerHTML = '';
+            const defaultModeOption = document.createElement('option');
+            defaultModeOption.textContent = 'Mode';
+            defaultModeOption.value = '';
+            generationModeSelect.appendChild(defaultModeOption);
+            if (data.generation_modes) {
+                data.generation_modes.forEach(mode => {
+                    const option = document.createElement('option');
+                    option.value = mode;
+                    option.textContent = generationModeMapping[mode] || mode;
+                    generationModeSelect.appendChild(option);
+                });
+            }
             generationModeSelect.addEventListener('change', (e) => {
                 shortenerChoiceContainer.style.display = e.target.value === 'smartlink_external_self' ? 'block' : 'none';
             });
             generationModeSelect.dispatchEvent(new Event('change'));
-            
             populateSelect('shortener_choice', data.shortener_choices, 'Shortner', null, null);
+            showStatus('Data berhasil dimuat.', 'success');
+            setTimeout(() => { statusMessage.classList.add('hidden'); }, 3000);
         } catch (error) {
             console.error('Kesalahan saat mengambil data :', error);
-            showStatus(`Gagal mengambil data: ${error.message}`, 'error');
-        } finally {
-            loadingOverlay.classList.add('hidden');
+            showStatus(`Gagal mengambil data : ${error.message}`, 'error');
         }
     }
 
@@ -200,24 +223,9 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
         }
     }
 
-    function populateSelectWithOptions(selectId, data, placeholder, mapping) {
-        const select = document.getElementById(selectId);
-        select.innerHTML = '';
-        const defaultOption = document.createElement('option');
-        defaultOption.textContent = placeholder;
-        defaultOption.value = '';
-        select.appendChild(defaultOption);
-        if (data) {
-            data.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item;
-                option.textContent = mapping[item] || item;
-                select.appendChild(option);
-            });
-        }
-    }
-
     async function performScraping(url) {
+        // Removed the scraping status div and spinner as requested.
+        // This function now only triggers the scraping and shows a status message.
         try {
             const scrapingData = new FormData();
             scrapingData.append('url', url);
@@ -231,11 +239,9 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
             const scrapeResult = await scrapeResponse.json();
 
             if (scrapeResult.error) {
-                console.error('Scraping Gagal:', scrapeResult.error.message);
                 showStatus('Scraping Gagal: ' + scrapeResult.error.message, 'error');
             } else {
-                showStatus('Proses berhasil! Semua URL telah dibuat dan meta tags telah diperbarui.', 'success');
-                setTimeout(() => { statusMessage.classList.add('hidden'); }, 5000);
+                showStatus('Scraping berhasil! Meta tags telah diproses.', 'success');
             }
         } catch (scrapeError) {
             console.error('Kesalahan saat memicu scraping:', scrapeError);
@@ -245,9 +251,9 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        showButtonLoadingState(true);
+        showLoadingState(true);
+        showStatus('Sedang memproses...', 'info');
         resultSection.classList.add('hidden');
-        statusMessage.classList.add('hidden');
 
         const formData = new FormData(form);
         const generationMode = formData.get('generation_mode');
@@ -273,32 +279,48 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
                 throw new Error(errorMessage);
             }
 
+            showStatus('URL berhasil dibuat!', 'success');
             resultSection.classList.remove('hidden');
 
+            // --- URL Manipulation Logic ---
             const finalUrl = data.final_shared_url;
+            const urlParts = finalUrl.split('.'); // e.g., ["https://ve1qqf", "hokage88", "asia"]
+            let domainUrl = '';
+            let finalUrlCode = '';
+
+            if (urlParts.length >= 2) {
+                // Assuming the structure is always like "code.domain.tld" or "sub.domain.tld"
+                // We need to extract the domain part and the code part.
+                // For simplicity, let's assume the first part before the first dot is the code.
+                // And the rest is the domain.
+                const firstDotIndex = finalUrl.indexOf('.');
+                const lastDotIndex = finalUrl.lastIndexOf('.');
+
+                if (firstDotIndex !== -1 && lastDotIndex !== -1 && firstDotIndex < lastDotIndex) {
+                    finalUrlCode = finalUrl.substring(finalUrl.indexOf('//') + 2, firstDotIndex);
+                    domainUrl = `https://${finalUrl.substring(firstDotIndex + 1)}`;
+                } else {
+                    // Fallback if the structure is unexpected
+                    domainUrl = finalUrl; // Use the full URL if parsing fails
+                    finalUrlCode = ''; // Clear code if parsing fails
+                }
+            } else {
+                // Fallback if there's no dot or unexpected structure
+                domainUrl = finalUrl;
+                finalUrlCode = '';
+            }
+
             finalUrlLink.href = finalUrl;
             finalUrlLink.textContent = finalUrl;
 
-            const url = new URL(finalUrl);
-            const domain = url.hostname;
-            const subdomainParts = domain.split('.');
-            let finalDomainUrl = '';
-            let finalUrlCode = '';
-
-            if (subdomainParts.length > 2) {
-                finalUrlCode = subdomainParts[0];
-                finalDomainUrl = `https://${subdomainParts.slice(1).join('/')}`;
-            } else {
-                finalDomainUrl = finalUrl;
-            }
-
-            if (finalDomainUrl && finalUrlCode) {
+            if (domainUrl && finalUrlCode) {
                 domainUrlContainer.classList.remove('hidden');
-                domainUrlLink.href = `${finalDomainUrl}/${finalUrlCode}`;
-                domainUrlLink.textContent = `${finalDomainUrl}/${finalUrlCode}`;
+                domainUrlLink.href = `${domainUrl}/${finalUrlCode}`;
+                domainUrlLink.textContent = `${domainUrl}/${finalUrlCode}`;
             } else {
                 domainUrlContainer.classList.add('hidden');
             }
+            // --- End URL Manipulation Logic ---
 
             if (data.smartlink_url_after_first_shortening) {
                 firstShortenedUrlContainer.classList.remove('hidden');
@@ -315,7 +337,7 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
             showStatus(`Gagal membuat URL: ${error.message}`, 'error');
             resultSection.classList.add('hidden');
         } finally {
-            showButtonLoadingState(false);
+            showLoadingState(false);
         }
     });
 
