@@ -120,16 +120,16 @@ if (file_exists($settingsFile)) {
                     <i data-lucide="link" class="w-5 h-5 mr-1"></i>
                     <span>Generator</span>
                 </a>
-                
+                <a href="reports.php" class="flex items-center text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200">
+                    <i data-lucide="bar-chart" class="w-5 h-5 mr-1"></i>
+                    <span>Reports</span>
+                </a>                
                 <?php if ($userRole !== 'user'): ?>
                 <a href="offers.php" class="flex items-center text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200">
                     <i data-lucide="trending-up" class="w-5 h-5 mr-1"></i>
                     <span>Offers</span>
                 </a>
-                <a href="reports.php" class="flex items-center text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200">
-                    <i data-lucide="bar-chart" class="w-5 h-5 mr-1"></i>
-                    <span>Reports</span>
-                </a>
+
                 <a href="user.php" class="flex items-center text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200">
                     <i data-lucide="user" class="w-5 h-5 mr-1"></i>
                     <span>Users</span>
@@ -169,15 +169,16 @@ if (file_exists($settingsFile)) {
             <a href="generator.php" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors duration-200">
                 <i data-lucide="link" class="w-5 h-5 mr-2"></i>
                 <span>Generator</span>
+            </a>           
+            <a href="reports.php" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors duration-200">
+                <i data-lucide="bar-chart" class="w-5 h-5 mr-2"></i>
+                <span>Reports</span>
             </a>
+
             <?php if ($userRole !== 'user'): ?>
             <a href="offers.php" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors duration-200">
                 <i data-lucide="trending-up" class="w-5 h-5 mr-2"></i>
                 <span>Offers</span>
-            </a>
-            <a href="reports.php" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors duration-200">
-                <i data-lucide="bar-chart" class="w-5 h-5 mr-2"></i>
-                <span>Reports</span>
             </a>
             <a href="user.php" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors duration-200">
                 <i data-lucide="user" class="w-5 h-5 mr-2"></i>

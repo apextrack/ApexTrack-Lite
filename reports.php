@@ -181,44 +181,76 @@ $breakdownUrl = buildFilterUrl('breakdown', $_GET);
             </div>
         </form>
 
-        <?php if ($activeView === 'advance'): ?>
-            <div class="mb-10">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">advance</h2>
-                <?php if (isset($reportData['error'])): ?>
-                    <p class="text-red-500"><?php echo htmlspecialchars($reportData['message']); ?></p>
-                <?php elseif (empty($reportData['data'])): ?>
-                    <p class="text-gray-500">Tidak ada data advance yang ditemukan.</p>
-                <?php else: ?>
-                    <div class="overflow-x-auto shadow-md ">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sub ID</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hits</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unique</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Conversions</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Approved</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CR (%)</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Payout</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <?php foreach ($reportData['data'] as $row): ?>
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo htmlspecialchars($row['username']); ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($row['hits']); ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($row['unique_clicks']); ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($row['leads']); ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($row['approved_leads']); ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($row['cr']); ?>%</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$<?php echo htmlspecialchars($row['total_payout']); ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
+<?php if ($activeView === 'advance'): ?>
+    <div class="mb-10">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">advance</h2>
+        <?php if (isset($reportData['error'])): ?>
+            <p class="text-red-500"><?php echo htmlspecialchars($reportData['message']); ?></p>
+        <?php elseif (empty($reportData['data'])): ?>
+            <p class="text-gray-500">Tidak ada data advance yang ditemukan.</p>
+        <?php else: ?>
+            <div class="overflow-x-auto shadow-md ">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sub ID</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hits</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unique</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Conversions</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Approved</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CR (%)</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Payout</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <?php
+                        // Initialize totals
+                        $totalHits = 0;
+                        $totalUniqueClicks = 0;
+                        $totalLeads = 0;
+                        $totalApprovedLeads = 0;
+                        $totalPayout = 0;
+
+                        foreach ($reportData['data'] as $row):
+                            // Accumulate totals
+                            $totalHits += $row['hits'];
+                            $totalUniqueClicks += $row['unique_clicks'];
+                            $totalLeads += $row['leads'];
+                            $totalApprovedLeads += $row['approved_leads'];
+                            $totalPayout += $row['total_payout'];
+                        ?>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo htmlspecialchars($row['username']); ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($row['hits']); ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($row['unique_clicks']); ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($row['leads']); ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($row['approved_leads']); ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($row['cr']); ?>%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$<?php echo htmlspecialchars($row['total_payout']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                    <tfoot>
+                        <tr class="bg-gray-100 font-bold">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Total</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($totalHits); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($totalUniqueClicks); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($totalLeads); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($totalApprovedLeads); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <?php
+                                // Calculate overall CR percentage
+                                $overallCR = ($totalHits > 0) ? ($totalApprovedLeads / $totalHits) * 100 : 0;
+                                echo htmlspecialchars(number_format($overallCR, 2));
+                                ?>%
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$<?php echo htmlspecialchars(number_format($totalPayout, 4)); ?></td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
+        <?php endif; ?>
+    </div>
         <?php elseif ($activeView === 'clicks'): ?>
             <div class="mb-10">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">Clicks</h2>
