@@ -20,7 +20,7 @@ $repoName = 'ApexTrack-Lite';
 $versionFileLocal = 'version.txt';
 $versionFileGithub = "https://raw.githubusercontent.com/{$repoOwner}/{$repoName}/master/version.txt";
 
-$currentVersion = '1.2.9'; 
+$currentVersion = '1.3.0'; 
 $context = stream_context_create([
     'http' => ['header' => 'User-Agent: PHP-Script']
 ]);
