@@ -20,7 +20,7 @@ $repoName = 'ApexTrack-Lite';
 $versionFileLocal = 'version.txt';
 $versionFileGithub = "https://raw.githubusercontent.com/{$repoOwner}/{$repoName}/master/version.txt";
 
-$currentVersion = '1.3.0'; 
+$currentVersion = '1.3.1'; 
 $context = stream_context_create([
     'http' => ['header' => 'User-Agent: PHP-Script']
 ]);
@@ -138,7 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $settings = [
                 'site_name' => $newSiteName,
                 'favicon_url' => $newFaviconUrl,
-                'versions' => $currentVersion,
                 'logo_url' => $newLogoUrl
             ];
             $jsonData = json_encode($settings, JSON_PRETTY_PRINT);

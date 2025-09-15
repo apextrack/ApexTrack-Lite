@@ -50,6 +50,17 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
                         <label for="shortener_choice" class="block text-sm font-medium text-gray-700">Shortner</label>
                         <select id="shortener_choice" name="shortener_choice" class="mt-1 block w-full px-4 py-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></select>
                     </div>
+                    
+                    <div id="lp-container">
+                        <label for="lp" class="block text-sm font-medium text-gray-700">Landing (Opsional)</label>
+                        <select id="lp" name="lp" class="mt-1 block w-full px-4 py-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <option value="">Random</option>
+                            <option value="1">FlirtGPT</option>
+                            <option value="2">NearYou</option>
+                            <option value="3">SnapChat</option>
+                            <option value="4">BioLink</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -65,7 +76,7 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
                         <textarea id="meta_description" name="meta_description" rows="3" class="mt-1 block w-full px-4 py-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
                     </div>
                     <div>
-                        <label for="og_image_file" class="block text-sm font-medium text-gray-700">Unggah Gambar OG (Open Graph)</label>
+                        <label for="og_image_file" class="block text-sm font-medium text-gray-700">Unggah Gambar (Open Graph)</label>
                         <input type="file" id="og_image_file" name="og_image_file" accept="image/*" class="mt-1 block w-full text-sm text-gray-500">
                     </div>
                     <div>
@@ -110,7 +121,7 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
 
     const form = document.getElementById('generator-form');
     const statusMessage = document.getElementById('status-message');
-    const loadingOverlay = document.getElementById('loading-overlay'); // Spinner overlay
+    const loadingOverlay = document.getElementById('loading-overlay'); 
     const resultSection = document.getElementById('result-section');
     const finalUrlLink = document.getElementById('final-url-link');
     const domainUrlContainer = document.getElementById('domain-url-container');
@@ -120,7 +131,10 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
     const shortenerChoiceContainer = document.getElementById('shortener-choice-container');
     const generateButton = document.getElementById('generate-button');
     const generateButtonText = document.getElementById('generate-button-text');
-    const spinner = document.getElementById('spinner'); // Spinner for the button
+    const spinner = document.getElementById('spinner');  
+    const lpContainer = document.getElementById('lp-container');
+    const lpSelect = document.getElementById('lp');
+    const typeSelect = document.getElementById('type');
 
     function showStatus(message, type) {
         statusMessage.innerHTML = message;
@@ -148,7 +162,7 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
     }
 
     async function fetchFormData() {
-        loadingOverlay.classList.remove('hidden'); // Show floating spinner
+        loadingOverlay.classList.remove('hidden');
         try {
             const response = await fetch(`${API_URL}/generator-data`, {
                 headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
@@ -166,21 +180,21 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
             populateSelect('offer', data.offers, 'Offers', 'id', 'name');
             populateSelect('shared_domain', data.domains, 'Domain', null, null);
             populateSelect('redirect_type', data.redirect_types, 'Redirect', null, null);
-            populateSelectWithOptions('type', data.types, 'Smartlink', { 'render': 'Render Halaman', 'redirect': 'Redirect Langsung' });
+            populateSelectWithOptions('type', data.types, 'Smartlink', { 'render': 'Landing Pages', 'redirect': 'Redirect Offer' });
             populateSelectWithOptions('generation_mode', data.generation_modes, 'Mode', { 'smartlink_external_self': 'Double Shortener', 'smartlink_self': 'Single Shortener' });
-            
+
             const generationModeSelect = document.getElementById('generation_mode');
             generationModeSelect.addEventListener('change', (e) => {
                 shortenerChoiceContainer.style.display = e.target.value === 'smartlink_external_self' ? 'block' : 'none';
             });
             generationModeSelect.dispatchEvent(new Event('change'));
-            
+
             populateSelect('shortener_choice', data.shortener_choices, 'Shortner', null, null);
         } catch (error) {
             console.error('Kesalahan saat mengambil data :', error);
             showStatus(`Gagal mengambil data: ${error.message}`, 'error');
         } finally {
-            loadingOverlay.classList.add('hidden'); // Hide floating spinner
+            loadingOverlay.classList.add('hidden'); 
         }
     }
 
@@ -215,6 +229,15 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
                 option.textContent = mapping[item] || item;
                 select.appendChild(option);
             });
+        }
+    }
+
+    function toggleLpContainer() {
+        if (typeSelect.value === 'render') {
+            lpContainer.classList.remove('hidden');
+        } else {
+            lpContainer.classList.add('hidden');
+            lpSelect.value = '';
         }
     }
 
@@ -255,6 +278,13 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
         if (generationMode !== 'smartlink_external_self') {
             formData.delete('shortener_choice');
         }
+        
+        const typeValue = formData.get('type');
+        if (typeValue !== 'render') {
+            formData.delete('lp');
+        } else if (lpSelect.value === '') { 
+            formData.delete('lp');
+        }
 
         try {
             const response = await fetch(`${API_URL}/generate-smartlink`, {
@@ -280,7 +310,6 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
             finalUrlLink.href = finalUrl;
             finalUrlLink.textContent = finalUrl;
 
-            // URL Manipulation Logic
             const url = new URL(finalUrl);
             const domain = url.hostname;
             const subdomainParts = domain.split('.');
@@ -291,7 +320,6 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
                 finalUrlCode = subdomainParts[0];
                 finalDomainUrl = `https://${subdomainParts.slice(1).join('.')}`;
             } else {
-                // If there's no subdomain (e.g., example.com)
                 finalDomainUrl = finalUrl;
             }
 
@@ -321,6 +349,10 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
             showButtonLoadingState(false);
         }
     });
+
+    typeSelect.addEventListener('change', toggleLpContainer);
+
+    toggleLpContainer();
 
     fetchFormData();
 </script>
