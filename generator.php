@@ -94,7 +94,6 @@ $countries = [
                         <input type="text" id="blocked_countries" name="blocked_countries_text"
                             class="mt-1 block w-full px-4 py-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             placeholder="Contoh: US, CA, DE (Pisahkan dengan koma)">
-                        <p class="mt-1 text-xs text-gray-500">Masukkan kode negara ISO 3166-1 alpha-2 yang ingin **di-blokir**, dipisahkan dengan koma (contoh: US, ID, GB).</p>
                         <!-- End Perubahan -->
                     </div>
                 </div>
