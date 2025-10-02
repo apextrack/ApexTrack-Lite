@@ -3,10 +3,10 @@
 include('layout/header.php');
 ?>
 
-<main class="flex-grow p-6 md:p-10 lg:p-12 min-h-screen bg-gray-100">
+<main class="p-6 md:p-10 lg:p-12 w-full font-sans">
     <h2 class="text-3xl font-bold text-gray-800 mb-6">Editor Thumbnail</h2>
 
-    <div class=" mx-auto bg-white p-6 md:p-10 shadow-2xl rounded-xl border border-gray-200">
+    <div class=" mx-auto bg-white p-6 md:p-10 shadow-2xl border border-gray-200">
 
         <?php if (isset($_GET['status'])): ?>
             <?php if ($_GET['status'] === 'success'): ?>
@@ -30,7 +30,7 @@ include('layout/header.php');
 
                 <!-- 1. Pilih Gambar -->
                 <div class="upload-section">
-                    <label for="imageUpload" class="inline-block w-full text-center cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 shadow-md hover:shadow-lg">
+                    <label for="imageUpload" class="inline-block w-full text-center cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition duration-300 shadow-md hover:shadow-lg">
                         <i class="fas fa-upload mr-2"></i> Unggah Gambar (.jpg, .png)
                     </label>
                     <input type="file" id="imageUpload" accept="image/*" class="hidden">
@@ -39,7 +39,7 @@ include('layout/header.php');
                 <!-- 2. Jumlah Views (Opsional) -->
                 <div class="view-section">
                     <label for="viewCount" class="text-md font-medium text-gray-700 block mb-2">Jumlah Views:</label>
-                    <input type="number" id="viewCount" class="w-full border-2 border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-4 focus:ring-indigo-200 focus:border-indigo-500 transition duration-150" value="" placeholder="Kosongkan untuk menyembunyikan views" min="0">
+                    <input type="number" id="viewCount" class="w-full border-2 border-gray-300 p-3 rounded-md focus:outline-none focus:ring-4 focus:ring-indigo-200 focus:border-indigo-500 transition duration-150" value="" placeholder="Kosongkan untuk menyembunyikan views" min="0">
                 </div>
 
                 <!-- 3. Toggle Buttons & New Profile Name Input -->
@@ -49,14 +49,14 @@ include('layout/header.php');
                     <!-- NEW PROFILE NAME INPUT -->
                     <div class="profile-name-section mb-4">
                         <label for="profileNameInput" class="text-sm font-medium text-gray-700 block mb-1">artis LIVE:</label>
-                        <input type="text" id="profileNameInput" class="w-full border border-gray-300 p-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500" value="Nama Live Anda" placeholder="Masukkan nama profil Anda">
+                        <input type="text" id="profileNameInput" class="w-full border border-gray-300 p-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500" value="Nama Live Anda" placeholder="Masukkan nama profil Anda">
                     </div>
 
-                    <button id="addPlayButton" class="w-full flex items-center justify-center bg-gray-700 hover:bg-gray-800 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-md" disabled>
+                    <button id="addPlayButton" class="w-full flex items-center justify-center bg-gray-700 hover:bg-gray-800 text-white font-bold py-3 px-4 rounded-md transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-md" disabled>
                         <i class="fas fa-play mr-3 text-lg"></i> (Play)
                     </button>
                     
-                    <button id="addLiveIndicator" class="w-full flex items-center justify-center bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-md" disabled>
+                    <button id="addLiveIndicator" class="w-full flex items-center justify-center bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-md transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-md" disabled>
                         <i class="fas fa-video mr-3 text-lg"></i> (LIVE)
                     </button>
                 </div>
@@ -65,8 +65,8 @@ include('layout/header.php');
             <!-- Kolom Canvas/Preview (Kanan) -->
             <div class="lg:col-span-2 mt-8 lg:mt-0">
                 <!-- Flex container untuk menahan canvas agar rapi -->
-                <div class="relative flex justify-center items-center bg-gray-200 rounded-lg overflow-hidden shadow-inner p-4">
-                    <canvas id="myCanvas" class="border-4 border-gray-400 shadow-xl rounded-lg w-full h-auto max-w-full"></canvas>
+                <div class="relative flex justify-center items-center bg-gray-200 rounded-md overflow-hidden shadow-inner p-4">
+                    <canvas id="myCanvas" class="border-4 border-gray-400 shadow-xl rounded-md w-full h-auto max-w-full"></canvas>
                 </div>
             </div>
         </div>
@@ -76,16 +76,16 @@ include('layout/header.php');
 
         <!-- Bagian Generate & Hasil (Di bawah Grid) -->
         <div class="text-center">
-            <button id="generateButton" class="w-full md:w-1/3 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-xl shadow-lg hover:shadow-xl" disabled>
-                <i class="fas fa-magic mr-2"></i> GENERATE
+            <button id="generateButton" class="w-full md:w-1/3 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-6 rounded-md transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-xl shadow-lg hover:shadow-xl" disabled>
+                <i class="fas fa-magic mr-2"></i> Generate Images
             </button>
         </div>
 
         <div class="result-section mt-10">
-            <div id="resultContainer" class="hidden text-center p-6 border border-green-200 bg-green-50 rounded-lg">
+            <div id="resultContainer" class="hidden text-center p-6 border border-green-200 bg-green-50 rounded-md">
                 <h5 class="text-2xl font-semibold mb-6 text-green-800">🎉 Hasil Akhir Siap Diunduh!</h5>
-                <img id="editedImagePreview" src="" alt="Pratinjau Hasil" class="mx-auto max-w-full h-auto border-4 border-green-500 shadow-2xl rounded-lg mb-6">
-                <a id="downloadLink" href="#" download="edited_image.png" class="inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300 text-lg shadow-xl hidden">
+                <img id="editedImagePreview" src="" alt="Pratinjau Hasil" class="mx-auto max-w-full h-auto border-4 border-green-500 shadow-2xl rounded-md mb-6">
+                <a id="downloadLink" href="#" download="edited_image.png" class="inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-md transition duration-300 text-lg shadow-xl hidden">
                     <i class="fas fa-download mr-2"></i> Unduh Gambar
                 </a>
             </div>
