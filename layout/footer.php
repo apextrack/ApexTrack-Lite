@@ -13,7 +13,7 @@
         const currentYear = new Date().getFullYear();
         const footerTextElement = document.getElementById('dynamic-footer-text');
         const versionElement = document.getElementById('app-version');
-        fetch('version.txt')
+        fetch('/version.txt')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Gagal memuat file version.txt');
@@ -32,24 +32,7 @@
                 }
             });
 
-        fetch('settings.json')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Gagal memuat file settings.json');
-                }
-                return response.json();
-            })
-            .then(settings => {
-                if (footerTextElement && settings.site_name) {
-                    footerTextElement.textContent = `Copyright © ${currentYear} ${settings.site_name}. All rights reserved.`;
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching site name settings:', error);
-                if (footerTextElement) {
-                    footerTextElement.textContent = `Copyright © ${currentYear} ApexTrack. All rights reserved.`;
-                }
-            });
+
 
         lucide.createIcons();
     });
