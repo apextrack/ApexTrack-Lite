@@ -1,18 +1,39 @@
 <?php
+// (index):64 cdn.tailwindcss.com should not be used in production. 
+// Hapus baris ini jika Anda benar-benar menggunakan CDN di produksi
+// atau instal Tailwind secara lokal.
+
 include 'layout/header.php';
 require_once 'config.php';
 
+// Pastikan selalu ada titik koma di akhir blok kode
 if (!isset($_SESSION['auth_token'])) {
     header('Location: login.php');
     exit();
 }
 
 $authToken = $_SESSION['auth_token'];
-
 // Token App untuk scraping, ditaruh di sini agar tidak terlihat oleh pengguna
-$appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
+$appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg'; // Ganti dengan token yang valid
+
+// Array daftar negara tidak lagi digunakan untuk membuat opsi select,
+// tetapi kita biarkan untuk referensi jika dibutuhkan.
+$countries = [
+    'US' => 'United States',
+    'ID' => 'Indonesia',
+    'MY' => 'Malaysia',
+    'GB' => 'United Kingdom',
+    'DE' => 'Germany',
+    'FR' => 'France',
+    'CA' => 'Canada',
+    'AU' => 'Australia',
+    'BR' => 'Brazil',
+    'IN' => 'India',
+    // Tambahkan negara lain sesuai kebutuhan Anda
+];
 
 ?>
+
 
 <main class="p-6 md:p-10 lg:p-12 w-full font-sans">
     <h2 class="text-3xl font-bold text-gray-900 mb-6">Smartlink Generator</h2>
@@ -64,6 +85,21 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
                 </div>
             </div>
 
+            <div class="border border-gray-300 p-6 mb-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Geo Targeting (Opsional)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="col-span-1 md:col-span-2">
+                        <!-- Perubahan di sini: Mengganti select multiple menjadi input type="text" -->
+                        <label for="blocked_countries" class="block text-sm font-medium text-gray-700">Blocked Countries (ISO Codes)</label>
+                        <input type="text" id="blocked_countries" name="blocked_countries_text"
+                            class="mt-1 block w-full px-4 py-2 border border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            placeholder="Contoh: US, CA, DE (Pisahkan dengan koma)">
+                        <p class="mt-1 text-xs text-gray-500">Masukkan kode negara ISO 3166-1 alpha-2 yang ingin **di-blokir**, dipisahkan dengan koma (contoh: US, ID, GB).</p>
+                        <!-- End Perubahan -->
+                    </div>
+                </div>
+            </div>
+            
             <div class="border border-gray-300 p-6">
                 <h3 class="text-xl font-semibold text-gray-800 mb-4">Meta Tags (Opsional)</h3>
                 <div class="space-y-4">
@@ -135,6 +171,12 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
     const lpContainer = document.getElementById('lp-container');
     const lpSelect = document.getElementById('lp');
     const typeSelect = document.getElementById('type');
+    
+    // Perubahan di sini: Mengambil referensi ke input teks
+    const blockedCountriesInput = document.getElementById('blocked_countries');
+    
+    // 💡 Catatan: Jika Anda menggunakan Tom Select, Anda harus menginisialisasinya di sini
+    // Contoh: new TomSelect("#blocked_countries", {plugins: ['remove_button']});
 
     function showStatus(message, type) {
         statusMessage.innerHTML = message;
@@ -233,11 +275,11 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
     }
 
     function toggleLpContainer() {
+        // Tampilkan/sembunyikan kontainer LP
         if (typeSelect.value === 'render') {
             lpContainer.classList.remove('hidden');
         } else {
             lpContainer.classList.add('hidden');
-            lpSelect.value = '';
         }
     }
 
@@ -274,17 +316,41 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
         statusMessage.classList.add('hidden');
 
         const formData = new FormData(form);
+        
+        // 1. Cleaning: Shortener Choice
         const generationMode = formData.get('generation_mode');
         if (generationMode !== 'smartlink_external_self') {
             formData.delete('shortener_choice');
         }
         
+        // 2. Cleaning: Landing Page (LP)
         const typeValue = formData.get('type');
-        if (typeValue !== 'render') {
-            formData.delete('lp');
-        } else if (lpSelect.value === '') { 
+        if (typeValue !== 'render' || lpSelect.value === '') { 
             formData.delete('lp');
         }
+
+        // 3. ✅ Cleaning: Blocked Countries (dari input teks)
+        const blockedCountriesString = blockedCountriesInput.value.trim();
+        let selectedCountries = [];
+
+        // Hapus field teks sementara dari FormData
+        formData.delete('blocked_countries_text'); 
+
+        if (blockedCountriesString) {
+            // Pisahkan oleh koma, hapus spasi, ubah ke UPPERCASE, dan filter string kosong
+            selectedCountries = blockedCountriesString.split(',')
+                .map(country => country.trim().toUpperCase())
+                .filter(country => country.length > 0);
+        }
+        
+        // Hanya tambahkan kembali jika ada kode negara yang valid
+        if (selectedCountries.length > 0) {
+            selectedCountries.forEach(country => {
+                // Tambahkan kembali field sebagai array dengan nama 'blocked_countries[]'
+                formData.append('blocked_countries[]', country);
+            });
+        }
+        // Jika array kosong, field 'blocked_countries[]' tidak akan dikirim, yang diharapkan.
 
         try {
             const response = await fetch(`${API_URL}/generate-smartlink`, {
@@ -295,14 +361,26 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
                 }
             });
 
-            const data = await response.json();
+            // Mencegah error 'Unexpected token <' dengan membaca respons sebagai teks jika status bukan OK
             if (!response.ok) {
-                let errorMessage = data.message || 'Terjadi kesalahan tidak terduga.';
-                if (data.errors) {
-                    errorMessage += '<br>' + Object.values(data.errors).flat().join('<br>');
+                const errorText = await response.text();
+                try {
+                    const data = JSON.parse(errorText);
+                    let errorMessage = data.message || 'Terjadi kesalahan tidak terduga.';
+                    if (data.errors) {
+                        // Format error validasi dari backend
+                        errorMessage += '<br>Detail Error:<br>' + Object.values(data.errors).flat().join('<br>');
+                    }
+                    throw new Error(errorMessage);
+                } catch (jsonError) {
+                    // Jika respons bukan JSON (kemungkinan HTML 500, seperti di log awal Anda)
+                    console.error('Non-JSON Error Response:', errorText);
+                    throw new Error(`Server Error (Status ${response.status}): Cek log backend untuk detail. ${errorText.substring(0, 100)}...`);
                 }
-                throw new Error(errorMessage);
             }
+            
+            // Jika status OK
+            const data = JSON.parse(await response.text());
 
             resultSection.classList.remove('hidden');
 
@@ -310,26 +388,42 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
             finalUrlLink.href = finalUrl;
             finalUrlLink.textContent = finalUrl;
 
-            const url = new URL(finalUrl);
-            const domain = url.hostname;
-            const subdomainParts = domain.split('.');
-            let finalDomainUrl = '';
-            let finalUrlCode = '';
+            // Logika pemrosesan URL Domain/URL Code
+            try {
+                const url = new URL(finalUrl);
+                const domain = url.hostname;
+                const subdomainParts = domain.split('.');
+                
+                let finalDomainUrl = '';
+                let finalUrlCode = '';
 
-            if (subdomainParts.length > 2) {
-                finalUrlCode = subdomainParts[0];
-                finalDomainUrl = `https://${subdomainParts.slice(1).join('.')}`;
-            } else {
-                finalDomainUrl = finalUrl;
-            }
+                if (subdomainParts.length > 2 && subdomainParts[0] !== 'www') {
+                    finalUrlCode = subdomainParts[0];
+                    finalDomainUrl = `${url.protocol}//${subdomainParts.slice(1).join('.')}`;
+                } else {
+                    // Ini hanya berlaku jika domainnya adalah TLD (example.com) atau www.domain.com
+                    finalDomainUrl = `${url.protocol}//${domain}`;
+                    finalUrlCode = url.pathname.substring(1); // Ambil slug dari path
+                    // Karena logika backend Anda menggunakan /s/{slug}, kita harus menguraikannya.
+                    if (finalUrlCode.startsWith('s/')) {
+                        finalUrlCode = finalUrlCode.split('/')[1];
+                    }
+                }
 
-            if (finalDomainUrl && finalUrlCode) {
-                domainUrlContainer.classList.remove('hidden');
-                domainUrlLink.href = `${finalDomainUrl}/${finalUrlCode}`;
-                domainUrlLink.textContent = `${finalDomainUrl}/${finalUrlCode}`;
-            } else {
+                if (finalUrlCode) {
+                    // Tampilkan URL Domain/Code hanya jika kita berhasil mengekstrak code
+                    domainUrlContainer.classList.remove('hidden');
+                    domainUrlLink.href = `${finalDomainUrl}/${finalUrlCode}`;
+                    domainUrlLink.textContent = `${finalDomainUrl}/${finalUrlCode}`;
+                } else {
+                    domainUrlContainer.classList.add('hidden');
+                }
+
+            } catch (urlError) {
+                console.error('Error saat memproses URL domain:', urlError);
                 domainUrlContainer.classList.add('hidden');
             }
+
 
             if (data.smartlink_url_after_first_shortening) {
                 firstShortenedUrlContainer.classList.remove('hidden');
@@ -343,7 +437,7 @@ $appAccessToken = '1308899767242947|HVu-8GkDtyPmpAR2SQOAx2BT2bg';
 
         } catch (error) {
             console.error('Kesalahan saat membuat URL:', error);
-            showStatus(`Gagal membuat URL: ${error.message}`, 'error');
+            showStatus(`Kesalahan saat membuat URL: ${error.message}`, 'error');
             resultSection.classList.add('hidden');
         } finally {
             showButtonLoadingState(false);
